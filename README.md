@@ -5,7 +5,7 @@ A full-stack authentication system with user login/signup interface.
 ## To run 
 
 ```bash
-git clone https://github.com/parth-rk/auth_sys.git
+git clone https://github.com/Parth-RK/auth_sys.git
 cd  auth_sys
 npm install
 ```
