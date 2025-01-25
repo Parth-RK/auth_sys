@@ -1,11 +1,12 @@
 // routes/auth.js
 import express from 'express';
 import { register, login, getProfile } from '../controllers/authController.js';
-import { authenticateToken, validateRegistration } from '../middleware/auth.js';
+import { authenticateToken } from '../middleware/auth.js';
 
 const router = express.Router();
 
-router.post('/register', validateRegistration, register);
+// Simplified routes using controllers
+router.post('/register', register);
 router.post('/login', login);
 router.get('/profile', authenticateToken, getProfile);
 

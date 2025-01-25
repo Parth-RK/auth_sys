@@ -1,19 +1,73 @@
-// client/src/components/UserManagement.js
 import React, { useState, useEffect } from 'react';
 import { api } from '../utils/axiosConfig';
 import { useAuth } from '../context/AuthContext';
+import {
+  Container,
+  Paper,
+  Table,
+  TableBody,
+  TableCell,
+  TableContainer,
+  TableHead,
+  TableRow,
+  TablePagination,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button,
+  TextField,
+  MenuItem,
+  Chip,
+  Typography,
+  Box,
+  IconButton,
+  CircularProgress,
+  Alert,
+  Snackbar,
+  FormControl,
+  InputLabel,
+  Select
+} from '@mui/material';
+import {
+  Edit as EditIcon,
+  Delete as DeleteIcon,
+  Person as PersonIcon,
+  Security as SecurityIcon,
+  SupervisorAccount as AdminIcon,
+  Assignment as ManagerIcon
+} from '@mui/icons-material';
+
+const roleConfig = {
+  user: { color: 'info', icon: <PersonIcon />, label: 'User' },
+  manager: { color: 'success', icon: <ManagerIcon />, label: 'Manager' },
+  admin: { color: 'warning', icon: <AdminIcon />, label: 'Admin' },
+  superadmin: { color: 'error', icon: <SecurityIcon />, label: 'Super Admin' }
+};
 
 const UserManagement = () => {
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [selectedUser, setSelectedUser] = useState(null);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [snackbar, setSnackbar] = useState({ open: false, message: '', severity: 'success' });
+  const [page, setPage] = useState(0);
+  const [rowsPerPage, setRowsPerPage] = useState(10);
   const { user: currentUser } = useAuth();
 
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     role: 'user'
+  });
+
+  const [confirmDialog, setConfirmDialog] = useState({
+    open: false,
+    title: '',
+    message: '',
+    action: null,
+    type: ''
   });
 
   useEffect(() => {
@@ -31,28 +85,72 @@ const UserManagement = () => {
     }
   };
 
-  const handleUpdateUser = async (userId) => {
+  const handleUpdateUser = async (userId, updateData = formData) => {
     try {
-      const response = await api.put(`/users/${userId}`, formData);
+      const response = await api.put(`/users/${userId}`, updateData);
       setUsers(users.map(user => 
         user._id === userId ? response.data : user
       ));
       setSelectedUser(null);
       setFormData({ name: '', email: '', role: 'user' });
+      setOpenDialog(false);
+      showSnackbar('User updated successfully');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to update user');
+      showSnackbar('Failed to update user', 'error');
     }
   };
 
   const handleDeleteUser = async (userId) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
-
     try {
       await api.delete(`/users/${userId}`);
       setUsers(users.filter(user => user._id !== userId));
+      showSnackbar('User deleted successfully');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to delete user');
+      showSnackbar('Failed to delete user', 'error');
     }
+  };
+
+  const handleDeleteConfirm = (user) => {
+    // Special check for superadmin
+    if (user.role === 'superadmin' && user._id === currentUser._id) {
+      showSnackbar("Superadmin cannot delete their own account", "error");
+      return;
+    }
+
+    const isSelfDelete = user._id === currentUser._id;
+    
+    setConfirmDialog({
+      open: true,
+      title: isSelfDelete ? 'Delete Your Account' : 'Confirm Delete',
+      message: isSelfDelete 
+        ? 'Are you sure you want to delete your account? This action cannot be undone.'
+        : `Are you sure you want to delete user "${user.name}"?`,
+      action: () => handleDeleteUser(user._id),
+      type: 'delete'
+    });
+  };
+
+  const handleRoleChangeConfirm = (userId, newRole) => {
+    const targetUser = users.find(u => u._id === userId);
+    if (!targetUser) return;
+
+    if (userId === currentUser._id) {
+      showSnackbar("You cannot modify your own role", "error");
+      return;
+    }
+
+    const roleLabel = roleConfig[newRole].label;
+    const currentRoleLabel = roleConfig[targetUser.role].label;
+    
+    setConfirmDialog({
+      open: true,
+      title: 'Confirm Role Change',
+      message: `Are you sure you want to change ${targetUser.name}'s role from ${currentRoleLabel} to ${roleLabel}?`,
+      action: () => handleUpdateUser(userId, { ...formData, role: newRole }),
+      type: 'role'
+    });
   };
 
   const handleSelectUser = (user) => {
@@ -62,119 +160,204 @@ const UserManagement = () => {
       email: user.email,
       role: user.role
     });
+    setOpenDialog(true);
   };
 
-  if (loading) return <div className="text-center p-4">Loading...</div>;
-  if (error) return <div className="text-red-500 p-4">{error}</div>;
+  const handleCloseDialog = () => {
+    setOpenDialog(false);
+    setSelectedUser(null);
+    setFormData({ name: '', email: '', role: 'user' });
+  };
+
+  const showSnackbar = (message, severity = 'success') => {
+    setSnackbar({ open: true, message, severity });
+  };
 
   return (
-    <div className="max-w-6xl mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">User Management</h2>
-      
-      {/* User List */}
-      <div className="bg-white shadow-md rounded-lg overflow-hidden">
-        <table className="min-w-full">
-          <thead className="bg-gray-50">
-            <tr>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Name</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Email</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Role</th>
-              <th className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase">Actions</th>
-            </tr>
-          </thead>
-          <tbody className="divide-y divide-gray-200">
-            {users.map(user => (
-              <tr key={user._id}>
-                <td className="px-6 py-4">{user.name}</td>
-                <td className="px-6 py-4">{user.email}</td>
-                <td className="px-6 py-4">{user.role}</td>
-                <td className="px-6 py-4 space-x-2">
-                  {currentUser.role === 'superadmin' || 
-                   (currentUser.role === 'admin' && user.role !== 'superadmin') ? (
-                    <>
-                      <button
-                        onClick={() => handleSelectUser(user)}
-                        className="text-blue-600 hover:text-blue-800"
-                      >
-                        Edit
-                      </button>
-                      <button
-                        onClick={() => handleDeleteUser(user._id)}
-                        className="text-red-600 hover:text-red-800"
-                      >
-                        Delete
-                      </button>
-                    </>
-                  ) : null}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
+    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
+        <Typography variant="h4" component="h1">
+          User Management
+        </Typography>
+      </Box>
 
-      {/* Edit User Form */}
-      {selectedUser && (
-        <div className="mt-6 bg-white shadow-md rounded-lg p-4">
-          <h3 className="text-lg font-semibold mb-4">Edit User</h3>
-          <form onSubmit={(e) => {
-            e.preventDefault();
-            handleUpdateUser(selectedUser._id);
-          }}>
-            <div className="space-y-4">
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Name</label>
-                <input
-                  type="text"
-                  value={formData.name}
-                  onChange={(e) => setFormData({ ...formData, name: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-gray-700">Email</label>
-                <input
-                  type="email"
-                  value={formData.email}
-                  onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                  className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                />
-              </div>
-              {currentUser.role === 'superadmin' && (
-                <div>
-                  <label className="block text-sm font-medium text-gray-700">Role</label>
-                  <select
-                    value={formData.role}
-                    onChange={(e) => setFormData({ ...formData, role: e.target.value })}
-                    className="mt-1 block w-full rounded-md border-gray-300 shadow-sm"
-                  >
-                    <option value="user">User</option>
-                    <option value="manager">Manager</option>
-                    <option value="admin">Admin</option>
-                    <option value="superadmin">Super Admin</option>
-                  </select>
-                </div>
-              )}
-              <div className="flex justify-end space-x-2">
-                <button
-                  type="button"
-                  onClick={() => setSelectedUser(null)}
-                  className="px-4 py-2 text-gray-700 bg-gray-200 rounded hover:bg-gray-300"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-4 py-2 text-white bg-blue-600 rounded hover:bg-blue-700"
-                >
-                  Save Changes
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
+      {loading ? (
+        <Box sx={{ display: 'flex', justifyContent: 'center', p: 3 }}>
+          <CircularProgress />
+        </Box>
+      ) : error ? (
+        <Alert severity="error">{error}</Alert>
+      ) : (
+        <TableContainer component={Paper} elevation={3}>
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>Name</TableCell>
+                <TableCell>Email</TableCell>
+                <TableCell>Role</TableCell>
+                <TableCell align="right">Actions</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {users
+                .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                .map((user) => (
+                  <TableRow key={user._id} hover>
+                    <TableCell>{user.name}</TableCell>
+                    <TableCell>{user.email}</TableCell>
+                    <TableCell>
+                      <Chip
+                        icon={roleConfig[user.role].icon}
+                        label={roleConfig[user.role].label}
+                        color={roleConfig[user.role].color}
+                        size="small"
+                      />
+                    </TableCell>
+                    <TableCell align="right">
+                      <Box>
+                        {/* Fixed delete button condition - now first */}
+                        {(currentUser.role === 'superadmin' || 
+                          currentUser.role === 'admin' || 
+                          currentUser._id === user._id) && 
+                          !(user.role === 'superadmin' && user._id === currentUser._id) && (
+                          <IconButton
+                            color="error"
+                            onClick={() => handleDeleteConfirm(user)}
+                          >
+                            <DeleteIcon />
+                          </IconButton>
+                        )}
+                        {/* Edit button condition - now second */}
+                        {(currentUser.role === 'superadmin' ||
+                          (currentUser.role === 'admin' && user.role !== 'superadmin')) && (
+                          <IconButton
+                            color="primary"
+                            onClick={() => handleSelectUser(user)}
+                          >
+                            <EditIcon />
+                          </IconButton>
+                        )}
+                      </Box>
+                    </TableCell>
+                  </TableRow>
+                ))}
+            </TableBody>
+          </Table>
+          <TablePagination
+            component="div"
+            count={users.length}
+            page={page}
+            onPageChange={(e, newPage) => setPage(newPage)}
+            rowsPerPage={rowsPerPage}
+            onRowsPerPageChange={(e) => {
+              setRowsPerPage(parseInt(e.target.value, 10));
+              setPage(0);
+            }}
+          />
+        </TableContainer>
       )}
-    </div>
+
+      {/* Custom Confirmation Dialog */}
+      <Dialog 
+        open={confirmDialog.open} 
+        onClose={() => setConfirmDialog({ ...confirmDialog, open: false })}
+      >
+        <DialogTitle sx={{ 
+          color: confirmDialog.type === 'delete' ? 'error.main' : 'primary.main' 
+        }}>
+          {confirmDialog.title}
+        </DialogTitle>
+        <DialogContent>
+          <Typography>{confirmDialog.message}</Typography>
+        </DialogContent>
+        <DialogActions>
+          <Button 
+            onClick={() => setConfirmDialog({ ...confirmDialog, open: false })}
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color={confirmDialog.type === 'delete' ? 'error' : 'primary'}
+            onClick={() => {
+              confirmDialog.action();
+              setConfirmDialog({ ...confirmDialog, open: false });
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      {/* Edit User Dialog */}
+      <Dialog open={openDialog} onClose={handleCloseDialog} maxWidth="sm" fullWidth>
+        <DialogTitle>
+          {selectedUser ? 'Edit User' : 'Create User'}
+        </DialogTitle>
+        <DialogContent>
+          <Box component="form" sx={{ mt: 2 }} spacing={3}>
+            <TextField
+              fullWidth
+              label="Name"
+              value={formData.name}
+              onChange={(e) => setFormData({ ...formData, name: e.target.value })}
+              margin="normal"
+            />
+            <TextField
+              fullWidth
+              label="Email"
+              type="email"
+              value={formData.email}
+              onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+              margin="normal"
+            />
+            {currentUser.role === 'superadmin' && selectedUser?._id !== currentUser._id && (
+              <FormControl fullWidth margin="normal">
+                <InputLabel>Role</InputLabel>
+                <Select
+                  value={formData.role}
+                  onChange={(e) => {
+                    if (e.target.value !== formData.role) {
+                      handleRoleChangeConfirm(selectedUser._id, e.target.value);
+                    }
+                  }}
+                  label="Role"
+                >
+                  {Object.entries(roleConfig).map(([role, config]) => (
+                    <MenuItem key={role} value={role}>
+                      <Box sx={{ display: 'flex', alignItems: 'center', gap: 1 }}>
+                        {config.icon}
+                        {config.label}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </Box>
+        </DialogContent>
+        <DialogActions>
+          <Button onClick={handleCloseDialog}>Cancel</Button>
+          <Button
+            onClick={() => handleUpdateUser(selectedUser._id)}
+            variant="contained"
+            color="primary"
+          >
+            Save Changes
+          </Button>
+        </DialogActions>
+      </Dialog>
+
+      <Snackbar
+        open={snackbar.open}
+        autoHideDuration={6000}
+        onClose={() => setSnackbar({ ...snackbar, open: false })}
+      >
+        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
+          {snackbar.message}
+        </Alert>
+      </Snackbar>
+    </Container>
   );
 };
 
