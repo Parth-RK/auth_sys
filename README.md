@@ -1,15 +1,15 @@
-### auth_sys
+# auth_sys
 
 A full-stack authentication system with user login/signup interface.
 
-# To run 
+## To run 
 
 ```bash
-git clone https://github.com/parth-rk/auth_sys.git
+git clone https://github.com/Parth-RK/auth_sys.git
 cd  auth_sys
 npm install
 ```
-# To start the server
+### To start the server
 
 create .env file in  the root directory and add the following lines
 
@@ -23,7 +23,7 @@ NODE_ENV=production
 ```bash
 npm start
 ```
-# To start the client
+### To start the client
 
 create .env file in the client directory and add the following line
 
