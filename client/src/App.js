@@ -49,8 +49,9 @@ function App() {
               </ProtectedRoute>
             } />
             
+            {/* Remove allowedRoles from users route to allow all authenticated users */}
             <Route path="/users" element={
-              <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
+              <ProtectedRoute>
                 <Layout>
                   <UserManagement />
                 </Layout>

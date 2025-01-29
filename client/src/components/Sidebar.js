@@ -32,15 +32,15 @@ const DrawerHeader = styled('div')(({ theme }) => ({
   ...theme.mixins.toolbar,
 }));
 
-const Sidebar = () => {
+const Sidebar = ({ drawerWidth, collapsedWidth }) => {
   const [open, setOpen] = useState(true);
   const location = useLocation();
   const navigate = useNavigate();
   const { user } = useAuth();
 
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: ['user', 'admin', 'superadmin'] },
-    { text: 'Users', icon: <PeopleIcon />, path: '/users', roles: ['admin', 'superadmin'] },
+    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: ['user', 'manager', 'admin', 'superadmin'] },
+    { text: 'Users', icon: <PeopleIcon />, path: '/users', roles: ['user', 'manager', 'admin', 'superadmin'] },
     { text: 'Database', icon: <StorageIcon />, path: '/database', roles: ['superadmin'] },
     { text: 'Security', icon: <SecurityIcon />, path: '/security', roles: ['admin', 'superadmin'] },
     { text: 'Appearance', icon: <PaletteIcon />, path: '/appearance', roles: ['admin', 'superadmin'] },
@@ -51,16 +51,21 @@ const Sidebar = () => {
     <Drawer
       variant="permanent"
       sx={{
-        width: open ? drawerWidth : 73,
-        flexShrink: 0,
+        position: 'fixed',
+        zIndex: (theme) => theme.zIndex.drawer + 1,
         '& .MuiDrawer-paper': {
-          width: open ? drawerWidth : 73,
-          transition: (theme) =>
-            theme.transitions.create('width', {
-              easing: theme.transitions.easing.sharp,
-              duration: theme.transitions.duration.enteringScreen,
-            }),
+          position: 'fixed',
+          left: 0,
+          width: open ? drawerWidth : collapsedWidth,
+          transition: theme => theme.transitions.create('width', {
+            easing: theme.transitions.easing.sharp,
+            duration: '0.3s', // Synchronized duration
+          }),
+          overflowX: 'hidden',
+          borderRight: theme => `1px solid ${theme.palette.divider}`,
           boxSizing: 'border-box',
+          height: '100%',
+          whiteSpace: 'nowrap',
         },
       }}
     >
@@ -69,7 +74,7 @@ const Sidebar = () => {
           onClick={() => setOpen(!open)}
           sx={{
             transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
-            transition: theme => theme.transitions.create('transform', {
+            transition: theme => theme.transitions.create(['transform', 'margin'], {
               duration: theme.transitions.duration.shortest,
             }),
           }}
@@ -77,6 +82,7 @@ const Sidebar = () => {
           <MenuIcon />
         </IconButton>
       </DrawerHeader>
+      
       <List>
         {menuItems
           .filter(item => item.roles.includes(user.role))
@@ -101,11 +107,33 @@ const Sidebar = () => {
                     minWidth: 0,
                     mr: open ? 3 : 'auto',
                     justifyContent: 'center',
+                    transition: theme => theme.transitions.create('margin', {
+                      duration: '0.3s', // Synchronized duration
+                    }),
                   }}
                 >
                   {item.icon}
                 </ListItemIcon>
-                {open && <ListItemText primary={item.text} />}
+                <Box
+                  component="span"
+                  sx={{
+                    opacity: open ? 1 : 0,
+                    transition: theme => theme.transitions.create('opacity', {
+                      duration: '0.2s',
+                      delay: open ? '0.1s' : '0s', // Show text after width expands
+                    }),
+                    display: 'block',
+                    width: open ? 'auto' : 0,
+                    overflow: 'hidden',
+                    whiteSpace: 'nowrap',
+                    visibility: open ? 'visible' : 'hidden',
+                    transitionProperty: 'opacity, visibility',
+                    transitionDuration: '0.2s',
+                    transitionDelay: open ? '0.1s' : '0s',
+                  }}
+                >
+                  <ListItemText primary={item.text} />
+                </Box>
               </ListItem>
             </Tooltip>
           ))}

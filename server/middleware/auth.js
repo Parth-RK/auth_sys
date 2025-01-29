@@ -26,11 +26,16 @@ export const authenticateToken = async (req, res, next) => {
   }
 };
 
-// Role-based authorization middleware
+// Modify the authorize middleware to be more flexible
 export const authorize = (...roles) => {
   return (req, res, next) => {
     if (!req.user) {
       return res.status(401).json({ message: 'User not authenticated' });
+    }
+
+    // If no roles are specified, allow all authenticated users
+    if (roles.length === 0) {
+      return next();
     }
 
     if (!roles.includes(req.user.role)) {
@@ -39,6 +44,18 @@ export const authorize = (...roles) => {
       });
     }
 
+    next();
+  };
+};
+
+// Update the checkRole middleware to be more specific about its usage
+export const checkRole = (roles) => {
+  return (req, res, next) => {
+    if (!roles.includes(req.user.role)) {
+      return res.status(403).json({ 
+        message: 'You do not have permission to perform this action' 
+      });
+    }
     next();
   };
 };

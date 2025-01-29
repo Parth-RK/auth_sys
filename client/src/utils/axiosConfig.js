@@ -18,36 +18,17 @@ instance.interceptors.request.use(
     }
     return config;
   },
-  (error) => {
-    return Promise.reject(error);
-  }
+  (error) => Promise.reject(error)
 );
 
-// Response interceptor
+// Add logging to help debug the issue
 instance.interceptors.response.use(
-  (response) => response,
-  async (error) => {
-    const originalRequest = error.config;
-
-    // Handle token expiration
-    if (error.response?.status === 401 && !originalRequest._retry) {
-      originalRequest._retry = true;
-      localStorage.removeItem('token');
-      window.location.href = '/login';
-      return Promise.reject(error);
-    }
-
-    // Handle network errors
-    if (!error.response) {
-      return Promise.reject({
-        response: {
-          data: {
-            message: 'Network error - please check your connection'
-          }
-        }
-      });
-    }
-
+  (response) => {
+    console.log('API Response:', response);
+    return response;
+  },
+  (error) => {
+    console.error('API Error:', error.response);
     return Promise.reject(error);
   }
 );

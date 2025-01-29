@@ -80,9 +80,12 @@ const UserManagement = () => {
 
   const fetchUsers = async () => {
     try {
+      console.log('Fetching users...'); // Debug log
       const response = await api.get('/users');
+      console.log('Users response:', response); // Debug log
       setUsers(response.data);
     } catch (err) {
+      console.error('Error fetching users:', err); // Debug log
       setError(err.response?.data?.message || 'Failed to fetch users');
     } finally {
       setLoading(false);
@@ -197,18 +200,23 @@ const UserManagement = () => {
             startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
           }}
         />
-        <Button
-          variant="outlined"
-          startIcon={<FilterListIcon />}
-        >
-          Filters
-        </Button>
-        <Button
-          variant="contained"
-          startIcon={<AddIcon />}
-        >
-          Add User
-        </Button>
+        {/* Only show these buttons to admin and superadmin */}
+        {(currentUser.role === 'admin' || currentUser.role === 'superadmin') && (
+          <>
+            <Button
+              variant="outlined"
+              startIcon={<FilterListIcon />}
+            >
+              Filters
+            </Button>
+            <Button
+              variant="contained"
+              startIcon={<AddIcon />}
+            >
+              Add User
+            </Button>
+          </>
+        )}
       </Box>
 
       {loading ? (
@@ -244,30 +252,33 @@ const UserManagement = () => {
                       />
                     </TableCell>
                     <TableCell align="right">
-                      <Box>
-                        {/* Fixed delete button condition - now first */}
-                        {(currentUser.role === 'superadmin' || 
-                          currentUser.role === 'admin' || 
-                          currentUser._id === user._id) && 
-                          !(user.role === 'superadmin' && user._id === currentUser._id) && (
-                          <IconButton
-                            color="error"
-                            onClick={() => handleDeleteConfirm(user)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        )}
-                        {/* Edit button condition - now second */}
-                        {(currentUser.role === 'superadmin' ||
-                          (currentUser.role === 'admin' && user.role !== 'superadmin')) && (
-                          <IconButton
-                            color="primary"
-                            onClick={() => handleSelectUser(user)}
-                          >
-                            <EditIcon />
-                          </IconButton>
-                        )}
-                      </Box>
+                      {/* Only show action buttons to admin and superadmin */}
+                      {(currentUser.role === 'admin' || currentUser.role === 'superadmin') && (
+                        <Box>
+                          {/* Fixed delete button condition - now first */}
+                          {(currentUser.role === 'superadmin' || 
+                            currentUser.role === 'admin' || 
+                            currentUser._id === user._id) && 
+                            !(user.role === 'superadmin' && user._id === currentUser._id) && (
+                            <IconButton
+                              color="error"
+                              onClick={() => handleDeleteConfirm(user)}
+                            >
+                              <DeleteIcon />
+                            </IconButton>
+                          )}
+                          {/* Edit button condition - now second */}
+                          {(currentUser.role === 'superadmin' ||
+                            (currentUser.role === 'admin' && user.role !== 'superadmin')) && (
+                            <IconButton
+                              color="primary"
+                              onClick={() => handleSelectUser(user)}
+                            >
+                              <EditIcon />
+                            </IconButton>
+                          )}
+                        </Box>
+                      )}
                     </TableCell>
                   </TableRow>
                 ))}
