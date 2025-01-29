@@ -15,7 +15,7 @@ create .env file in  the root directory and add the following lines
 
 ```
 JWT_SECRET=your_jwt_secret_here
-MONGODB_URI=mongodb+srv://**********************
+MONGODB_URI==mongodb+srv://<db_admin>:<db_password>@cluster0.zej6a.mongodb.net/?retryWrites=true&w=majority&appName=Cluster0
 PORT=5000
 NODE_ENV=production
 ```

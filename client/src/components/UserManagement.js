@@ -35,7 +35,11 @@ import {
   Person as PersonIcon,
   Security as SecurityIcon,
   SupervisorAccount as AdminIcon,
-  Assignment as ManagerIcon
+  Assignment as ManagerIcon,
+  MoreVert as MoreVertIcon,
+  Search as SearchIcon,
+  Add as AddIcon,
+  FilterList as FilterListIcon,
 } from '@mui/icons-material';
 
 const roleConfig = {
@@ -174,11 +178,37 @@ const UserManagement = () => {
   };
 
   return (
-    <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 3 }}>
-        <Typography variant="h4" component="h1">
+    <Box sx={{ width: '100%' }}>
+      <Box sx={{ mb: 4 }}>
+        <Typography variant="h4" gutterBottom>
           User Management
         </Typography>
+        <Typography variant="subtitle1" color="text.secondary">
+          Manage team members' data and permissions
+        </Typography>
+      </Box>
+
+      <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+        <TextField
+          size="small"
+          placeholder="Search users..."
+          sx={{ flexGrow: 1 }}
+          InputProps={{
+            startAdornment: <SearchIcon color="action" sx={{ mr: 1 }} />,
+          }}
+        />
+        <Button
+          variant="outlined"
+          startIcon={<FilterListIcon />}
+        >
+          Filters
+        </Button>
+        <Button
+          variant="contained"
+          startIcon={<AddIcon />}
+        >
+          Add User
+        </Button>
       </Box>
 
       {loading ? (
@@ -352,12 +382,19 @@ const UserManagement = () => {
         open={snackbar.open}
         autoHideDuration={6000}
         onClose={() => setSnackbar({ ...snackbar, open: false })}
-      >
-        <Alert severity={snackbar.severity} sx={{ width: '100%' }}>
-          {snackbar.message}
-        </Alert>
-      </Snackbar>
-    </Container>
+        message={snackbar.message}
+        action={
+          <Box>
+            <Button color="secondary" size="small" onClick={() => {}}>
+              UNDO
+            </Button>
+            <Button color="primary" size="small" onClick={() => {}}>
+              VIEW PROFILE
+            </Button>
+          </Box>
+        }
+      />
+    </Box>
   );
 };
 

@@ -8,6 +8,7 @@ import PrivilegeControl from './components/PrivilegeControl';
 import UserManagement from './components/UserManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
+import Layout from './components/Layout';
 
 const theme = createTheme({
   palette: {
@@ -31,22 +32,28 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/" element={<Login />} />
             
-            {/* Protected Routes */}
+            {/* Protected Routes with Layout */}
             <Route path="/dashboard" element={
               <ProtectedRoute>
-                <Dashboard />
+                <Layout>
+                  <Dashboard />
+                </Layout>
               </ProtectedRoute>
             } />
             
             <Route path="/privileges" element={
               <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-                <PrivilegeControl />
+                <Layout>
+                  <PrivilegeControl />
+                </Layout>
               </ProtectedRoute>
             } />
             
             <Route path="/users" element={
               <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
-                <UserManagement />
+                <Layout>
+                  <UserManagement />
+                </Layout>
               </ProtectedRoute>
             } />
           </Routes>
