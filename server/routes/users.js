@@ -5,8 +5,23 @@ import bcrypt from 'bcrypt';
 
 const router = express.Router();
 
-// Get all users - accessible to all authenticated users
-router.get('/', authenticateToken, async (req, res) => {
+// Debug utility function
+const debugLog = (section, message, data = null) => {
+  console.log(`[DEBUG][${section}] ${message}`);
+  if (data) {
+    console.log(JSON.stringify(data, null, 2));
+  }
+};
+
+// Log all routes for debugging
+router.use((req, res, next) => {
+  debugLog('USERS_ROUTE', `${req.method} ${req.originalUrl}`);
+  next();
+});
+
+// Get all users - accessible to admin and superadmin
+// Fixed: Pass roles as separate arguments instead of an array
+router.get('/', authenticateToken, authorize('admin', 'superadmin'), async (req, res) => {
   try {
     const users = await User.find({}, '-password');
     res.json(users);
@@ -16,7 +31,7 @@ router.get('/', authenticateToken, async (req, res) => {
 });
 
 // Get single user
-router.get('/:id', authenticateToken, async (req, res) => {
+router.get('/:id', authenticateToken, authorize('admin', 'superadmin'), async (req, res) => {
   try {
     const user = await User.findById(req.params.id, '-password');
     if (!user) {
@@ -29,7 +44,8 @@ router.get('/:id', authenticateToken, async (req, res) => {
 });
 
 // Update user - restricted to admins and superadmins
-router.put('/:id', authenticateToken, authorize(['admin', 'superadmin']), async (req, res) => {
+// Fixed: Pass roles as separate arguments
+router.put('/:id', authenticateToken, authorize('admin', 'superadmin'), async (req, res) => {
   try {
     const { name, email, role, password } = req.body;
     const userId = req.params.id;
@@ -72,7 +88,8 @@ router.put('/:id', authenticateToken, authorize(['admin', 'superadmin']), async 
 });
 
 // Delete user - restricted to admins and superadmins
-router.delete('/:id', authenticateToken, authorize(['admin', 'superadmin']), async (req, res) => {
+// Fixed: Pass roles as separate arguments
+router.delete('/:id', authenticateToken, authorize('admin', 'superadmin'), async (req, res) => {
   try {
     const userId = req.params.id;
     const userToDelete = await User.findById(userId);
@@ -99,7 +116,7 @@ router.delete('/:id', authenticateToken, authorize(['admin', 'superadmin']), asy
 });
 
 // Search users
-router.get('/search', authenticateToken, async (req, res) => {
+router.get('/search', authenticateToken, authorize('admin', 'superadmin'), async (req, res) => {
   try {
     const { query } = req.query;
     const users = await User.find({

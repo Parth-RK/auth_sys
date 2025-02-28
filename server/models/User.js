@@ -1,6 +1,14 @@
 // models/User.js
 import mongoose from 'mongoose';
-import bcrypt from 'bcryptjs'; 
+import bcrypt from 'bcryptjs';
+
+// Debug utility function
+const debugLog = (section, message, data = null) => {
+  console.log(`[DEBUG][${section}] ${message}`);
+  if (data) {
+    console.log(JSON.stringify(data, null, 2));
+  }
+};
 
 const UserSchema = new mongoose.Schema({
   name: {
@@ -43,21 +51,37 @@ const UserSchema = new mongoose.Schema({
 
 // Ensure password is hashed before saving
 UserSchema.pre('save', async function(next) {
+  debugLog('USER_MODEL', `Pre-save hook triggered for user: ${this.email}`);
+  
   if (!this.isModified('password')) {
+    debugLog('USER_MODEL', 'Password not modified, skipping hash');
     return next();
   }
+  
   try {
+    debugLog('USER_MODEL', 'Hashing password');
     const salt = await bcrypt.genSalt(10);
     this.password = await bcrypt.hash(this.password, salt);
+    debugLog('USER_MODEL', 'Password hashed successfully');
     next();
   } catch (error) {
+    debugLog('USER_MODEL', 'Password hashing error:', error);
     next(error);
   }
 });
 
 // Method to compare password
 UserSchema.methods.comparePassword = async function(candidatePassword) {
-  return await bcrypt.compare(candidatePassword, this.password);
+  debugLog('USER_MODEL', `Comparing password for user: ${this.email}`);
+  
+  try {
+    const isMatch = await bcrypt.compare(candidatePassword, this.password);
+    debugLog('USER_MODEL', `Password comparison result: ${isMatch ? 'Match' : 'No match'}`);
+    return isMatch;
+  } catch (error) {
+    debugLog('USER_MODEL', 'Password comparison error:', error);
+    throw error;
+  }
 };
 
 // Method to check if user can modify target user
