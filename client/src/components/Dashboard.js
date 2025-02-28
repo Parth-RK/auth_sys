@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useAuth } from '../context/AuthContext';
+import '../styles/dashboard.css';
 import { 
   AppBar,
   Toolbar,
@@ -67,8 +68,8 @@ export const Dashboard = () => {
   };
 
   return (
-    <Box sx={{ flexGrow: 1 }}>
-      <AppBar position="static" sx={{ mb: 4 }}>
+    <Box sx={{ flexGrow: 1 }} className="dashboard-container pattern-bg">
+      <AppBar position="static" sx={{ mb: 4 }} className="app-bar">
         <Toolbar>
           <IconButton
             size="large"
@@ -108,41 +109,38 @@ export const Dashboard = () => {
           <Grid item xs={12}>
             <Paper 
               elevation={3}
+              className="welcome-card"
               sx={{ 
                 p: 3, 
                 background: 'linear-gradient(45deg, #2196F3 30%, #21CBF3 90%)',
                 color: 'white'
               }}
             >
-              <Typography variant="h4" gutterBottom>
-                Welcome, {user.name}!
-              </Typography>
-              <Typography variant="subtitle1">
-                Access Level: {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-              </Typography>
+              <div className="welcome-content">
+                <Typography variant="h4" gutterBottom className="welcome-title fade-in">
+                  Welcome, {user.name}!
+                </Typography>
+                <Typography variant="subtitle1" className="fade-in stagger-item-1">
+                  Access Level: {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                </Typography>
+              </div>
             </Paper>
           </Grid>
 
           {/* Available Features */}
-          <Grid item xs={12} md={8}>
+          <Grid item xs={12} md={8} className="feature-container fade-in stagger-item-2">
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Available Features
               </Typography>
               <Grid container spacing={2}>
                 {roleData.features.map((feature, index) => (
-                  <Grid item xs={12} sm={6} md={4} key={index}>
-                    <Card 
-                      sx={{ 
-                        height: '100%',
-                        '&:hover': {
-                          boxShadow: 6,
-                          transform: 'scale(1.02)',
-                          transition: 'all 0.2s ease-in-out'
-                        }
-                      }}
-                    >
+                  <Grid item xs={12} sm={6} md={4} key={index} className={`fade-in stagger-item-${index+1}`}>
+                    <Card className="feature-card hover-lift">
                       <CardContent>
+                        <div className="feature-icon">
+                          {roleData.icon}
+                        </div>
                         <Typography variant="subtitle1" gutterBottom>
                           {feature}
                         </Typography>
@@ -155,12 +153,12 @@ export const Dashboard = () => {
           </Grid>
 
           {/* Quick Actions */}
-          <Grid item xs={12} md={4}>
+          <Grid item xs={12} md={4} className="fade-in stagger-item-3">
             <Paper elevation={3} sx={{ p: 3 }}>
               <Typography variant="h6" gutterBottom>
                 Quick Actions
               </Typography>
-              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
+              <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }} className="action-buttons">
                 {(user.role === 'admin' || user.role === 'superadmin') && (
                   <>
                     <Button
@@ -169,6 +167,7 @@ export const Dashboard = () => {
                       onClick={() => handleNavigate('/privileges')}
                       startIcon={<SecurityIcon />}
                       fullWidth
+                      className="action-button primary slide-in stagger-item-1"
                     >
                       Manage Privileges
                     </Button>
@@ -178,6 +177,7 @@ export const Dashboard = () => {
                       onClick={() => handleNavigate('/users')}
                       startIcon={<AdminIcon />}
                       fullWidth
+                      className="action-button secondary slide-in stagger-item-2"
                     >
                       User Management
                     </Button>
@@ -189,22 +189,21 @@ export const Dashboard = () => {
         </Grid>
       </Container>
 
-      {/* Updated Logout Confirmation Dialog to match other dialogs */}
+      {/* Updated Logout Confirmation Dialog */}
       <Dialog 
         open={logoutDialog} 
         onClose={() => setLogoutDialog(false)}
+        className="dialog"
       >
-        <DialogTitle sx={{ 
-          color: 'error.main'  // Changed to use theme color
-        }}>
+        <DialogTitle className="dialog-title" sx={{ color: 'error.main' }}>
           Confirm Logout
         </DialogTitle>
-        <DialogContent>
+        <DialogContent className="dialog-content">
           <Typography>
             Are you sure you want to logout?
           </Typography>
         </DialogContent>
-        <DialogActions>
+        <DialogActions className="dialog-actions">
           <Button 
             onClick={() => setLogoutDialog(false)}
             variant="outlined"
@@ -213,7 +212,8 @@ export const Dashboard = () => {
           </Button>
           <Button
             variant="contained"
-            color="error"  // Changed to use theme color
+            color="error"
+            className="confirm-button"
             onClick={() => {
               logout();
               setLogoutDialog(false);

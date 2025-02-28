@@ -1,43 +1,77 @@
-import React from 'react';
-import { Box, CssBaseline } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { CssBaseline } from '@mui/material';
 import Sidebar from './Sidebar';
+import '../styles/layout.css';
 
 const DRAWER_WIDTH = 240;
 const COLLAPSED_DRAWER_WIDTH = 73;
 
 const Layout = ({ children }) => {
+  const [scrolled, setScrolled] = useState(false);
+
+  // Handle scroll effect for header
+  useEffect(() => {
+    const handleScroll = () => {
+      if (window.scrollY > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, []);
+
   return (
-    <Box sx={{ display: 'flex' }}>
+    <div className="layout-container">
       <CssBaseline />
-      <Sidebar drawerWidth={DRAWER_WIDTH} collapsedWidth={COLLAPSED_DRAWER_WIDTH} />
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          minHeight: '100vh',
-          display: 'flex',
-          flexDirection: 'column',
-          alignItems: 'center',  // Center horizontally
-          ml: `${COLLAPSED_DRAWER_WIDTH}px`, // Add margin for collapsed sidebar
-          width: `calc(100% - ${COLLAPSED_DRAWER_WIDTH}px)`,
-          transition: theme => theme.transitions.create(['margin', 'width'], {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-        }}
-      >
-        <Box 
-          sx={{ 
-            width: '100%',
-            maxWidth: 1200,  // Maximum width for content
-            mt: '64px',      // Top margin for header
-          }}
-        >
-          {children}
-        </Box>
-      </Box>
-    </Box>
+      
+      {/* Scroll Progress Indicator */}
+      <div 
+        className="scroll-progress" 
+        style={{ 
+          transform: `scaleX(${scrolled ? window.scrollY / (document.body.scrollHeight - window.innerHeight) : 0})` 
+        }} 
+      />
+      
+      <Sidebar 
+        drawerWidth={DRAWER_WIDTH} 
+        collapsedWidth={COLLAPSED_DRAWER_WIDTH} 
+      />
+      
+      <div className="layout-content-wrapper" style={{ 
+        marginLeft: `${COLLAPSED_DRAWER_WIDTH}px`,
+        width: `calc(100% - ${COLLAPSED_DRAWER_WIDTH}px)`,
+      }}>
+        <header className={`header ${scrolled ? 'scrolled' : ''}`}>
+          <div className="header-brand">
+            <div className="header-logo">
+              <span className="material-icons">dashboard</span>
+            </div>
+            <div className="header-title">Auth System</div>
+          </div>
+          <div className="header-actions">
+            {/* Header actions can be added here */}
+          </div>
+        </header>
+        
+        <main className="layout-content">
+          <div className="page-container">
+            {children}
+          </div>
+        </main>
+        
+        <footer className="footer">
+          <div className="footer-links">
+            <a href="/privacy" className="footer-link">Privacy Policy</a>
+            <a href="/terms" className="footer-link">Terms of Service</a>
+            <a href="/support" className="footer-link">Contact Support</a>
+          </div>
+          <div>© {new Date().getFullYear()} Auth System. All rights reserved.</div>
+        </footer>
+      </div>
+    </div>
   );
 };
 

@@ -9,6 +9,7 @@ import UserManagement from './components/UserManagement';
 import ProtectedRoute from './components/ProtectedRoute';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Layout from './components/Layout';
+import './styles/App.css';
 
 const theme = createTheme({
   palette: {

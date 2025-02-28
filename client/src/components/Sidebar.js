@@ -1,15 +1,11 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
   Box,
-  Drawer,
-  List,
-  ListItem,
-  ListItemIcon,
-  ListItemText,
+  useMediaQuery,
+  useTheme,
   IconButton,
-  styled,
-  Tooltip,
+  Typography
 } from '@mui/material';
 import {
   Dashboard as DashboardIcon,
@@ -19,126 +15,231 @@ import {
   Palette as PaletteIcon,
   Settings as SettingsIcon,
   Menu as MenuIcon,
+  ChevronLeft as ChevronLeftIcon,
+  ExitToApp as LogoutIcon,
+  Badge as BadgeIcon
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
-
-const drawerWidth = 240;
-
-const DrawerHeader = styled('div')(({ theme }) => ({
-  display: 'flex',
-  alignItems: 'center',
-  justifyContent: 'flex-end',
-  padding: theme.spacing(0, 1),
-  ...theme.mixins.toolbar,
-}));
+import '../styles/sidebar.css';
 
 const Sidebar = ({ drawerWidth, collapsedWidth }) => {
   const [open, setOpen] = useState(true);
+  const [mobileOpen, setMobileOpen] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
-  const { user } = useAuth();
+  const { user, logout } = useAuth();
+  const theme = useTheme();
+  const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  
+  // Close sidebar on mobile when route changes
+  useEffect(() => {
+    if (isMobile) {
+      setMobileOpen(false);
+    }
+  }, [location.pathname, isMobile]);
+  
+  // Auto collapse sidebar on mobile
+  useEffect(() => {
+    if (isMobile) {
+      setOpen(false);
+    }
+  }, [isMobile]);
 
   const menuItems = [
-    { text: 'Dashboard', icon: <DashboardIcon />, path: '/dashboard', roles: ['user', 'manager', 'admin', 'superadmin'] },
-    { text: 'Users', icon: <PeopleIcon />, path: '/users', roles: ['user', 'manager', 'admin', 'superadmin'] },
-    { text: 'Database', icon: <StorageIcon />, path: '/database', roles: ['superadmin'] },
-    { text: 'Security', icon: <SecurityIcon />, path: '/security', roles: ['admin', 'superadmin'] },
-    { text: 'Appearance', icon: <PaletteIcon />, path: '/appearance', roles: ['admin', 'superadmin'] },
-    { text: 'Settings', icon: <SettingsIcon />, path: '/settings', roles: ['admin', 'superadmin'] },
+    { 
+      text: 'Dashboard', 
+      icon: <DashboardIcon />, 
+      path: '/dashboard', 
+      roles: ['user', 'manager', 'admin', 'superadmin']
+    },
+    { 
+      text: 'Users', 
+      icon: <PeopleIcon />, 
+      path: '/users', 
+      roles: ['manager', 'admin', 'superadmin']
+    },
+    { 
+      text: 'Database', 
+      icon: <StorageIcon />, 
+      path: '/database', 
+      roles: ['admin', 'superadmin']
+    },
+    { 
+      text: 'Security', 
+      icon: <SecurityIcon />, 
+      path: '/security', 
+      roles: ['admin', 'superadmin']
+    },
+    { 
+      text: 'Appearance', 
+      icon: <PaletteIcon />, 
+      path: '/appearance', 
+      roles: ['admin', 'superadmin']
+    },
+    { 
+      text: 'Settings', 
+      icon: <SettingsIcon />, 
+      path: '/settings', 
+      roles: ['user', 'manager', 'admin', 'superadmin']
+    },
   ];
 
+  const handleToggle = () => {
+    setOpen(!open);
+  };
+
+  const toggleMobileDrawer = () => {
+    setMobileOpen(!mobileOpen);
+  };
+
+  const getInitials = (name) => {
+    return name
+      .split(' ')
+      .map(part => part[0])
+      .join('')
+      .toUpperCase();
+  };
+
+  // Filter menu items by user role
+  const filteredMenuItems = menuItems.filter(
+    item => item.roles.includes(user.role)
+  );
+
+  const sidebarContent = (
+    <div className={`sidebar ${open ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
+      {/* Sidebar Header */}
+      <div className="sidebar-header">
+        <div className="sidebar-logo-container">
+          <div className="sidebar-logo">
+            <BadgeIcon />
+          </div>
+          <Typography variant="h6" className="sidebar-logo-text">
+            AuthSys
+          </Typography>
+        </div>
+        <button 
+          className="sidebar-toggle"
+          onClick={handleToggle}
+          aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          <ChevronLeftIcon 
+            className={`sidebar-toggle-icon ${open ? 'expanded' : ''}`} 
+          />
+        </button>
+      </div>
+
+      {/* Navigation Items */}
+      <nav className="sidebar-nav">
+        <div className="sidebar-nav-section">
+          <div className="sidebar-section-title">Main Navigation</div>
+          
+          {filteredMenuItems.map((item) => (
+            <div 
+              key={item.text} 
+              className={`nav-item ${location.pathname === item.path ? 'active' : ''}`}
+              onClick={() => navigate(item.path)}
+              tabIndex={0}
+              role="button"
+            >
+              <div className="nav-icon">
+                {item.icon}
+              </div>
+              <div className="nav-text">
+                {item.text}
+              </div>
+              {!open && (
+                <div className="nav-tooltip">
+                  {item.text}
+                </div>
+              )}
+            </div>
+          ))}
+        </div>
+      </nav>
+
+      {/* User Profile / Footer */}
+      <div className="sidebar-footer">
+        <div className="user-profile">
+          <div className="user-info">
+            <div className="user-avatar">
+              {getInitials(user.name)}
+            </div>
+            <div>
+              <div className="user-name">
+                {user.name}
+              </div>
+              <div className="user-role">
+                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+              </div>
+            </div>
+          </div>
+          <button 
+            className="user-logout"
+            onClick={logout}
+            aria-label="Logout"
+          >
+            <LogoutIcon fontSize="small" />
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+
   return (
-    <Drawer
-      variant="permanent"
-      sx={{
-        position: 'fixed',
-        zIndex: (theme) => theme.zIndex.drawer + 1,
-        '& .MuiDrawer-paper': {
-          position: 'fixed',
-          left: 0,
-          width: open ? drawerWidth : collapsedWidth,
-          transition: theme => theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: '0.3s', // Synchronized duration
-          }),
-          overflowX: 'hidden',
-          borderRight: theme => `1px solid ${theme.palette.divider}`,
-          boxSizing: 'border-box',
-          height: '100%',
-          whiteSpace: 'nowrap',
-        },
-      }}
-    >
-      <DrawerHeader>
-        <IconButton 
-          onClick={() => setOpen(!open)}
+    <>
+      {/* Desktop Drawer */}
+      {!isMobile && (
+        <Box 
+          component="aside"
           sx={{
-            transform: open ? 'rotate(90deg)' : 'rotate(0deg)',
-            transition: theme => theme.transitions.create(['transform', 'margin'], {
-              duration: theme.transitions.duration.shortest,
-            }),
+            width: open ? drawerWidth : collapsedWidth,
+            flexShrink: 0,
+            '& .MuiDrawer-paper': {
+              width: open ? drawerWidth : collapsedWidth,
+              boxSizing: 'border-box',
+              transition: theme => theme.transitions.create('width', {
+                easing: theme.transitions.easing.sharp,
+                duration: theme.transitions.duration.enteringScreen,
+              }),
+              overflowX: 'hidden',
+            },
           }}
         >
-          <MenuIcon />
-        </IconButton>
-      </DrawerHeader>
-      
-      <List>
-        {menuItems
-          .filter(item => item.roles.includes(user.role))
-          .map((item) => (
-            <Tooltip
-              key={item.text}
-              title={!open ? item.text : ''}
-              placement="right"
-            >
-              <ListItem
-                button
-                onClick={() => navigate(item.path)}
-                selected={location.pathname === item.path}
-                sx={{
-                  minHeight: 48,
-                  justifyContent: open ? 'initial' : 'center',
-                  px: 2.5,
-                }}
-              >
-                <ListItemIcon
-                  sx={{
-                    minWidth: 0,
-                    mr: open ? 3 : 'auto',
-                    justifyContent: 'center',
-                    transition: theme => theme.transitions.create('margin', {
-                      duration: '0.3s', // Synchronized duration
-                    }),
-                  }}
-                >
-                  {item.icon}
-                </ListItemIcon>
-                <Box
-                  component="span"
-                  sx={{
-                    opacity: open ? 1 : 0,
-                    transition: theme => theme.transitions.create('opacity', {
-                      duration: '0.2s',
-                      delay: open ? '0.1s' : '0s', // Show text after width expands
-                    }),
-                    display: 'block',
-                    width: open ? 'auto' : 0,
-                    overflow: 'hidden',
-                    whiteSpace: 'nowrap',
-                    visibility: open ? 'visible' : 'hidden',
-                    transitionProperty: 'opacity, visibility',
-                    transitionDuration: '0.2s',
-                    transitionDelay: open ? '0.1s' : '0s',
-                  }}
-                >
-                  <ListItemText primary={item.text} />
-                </Box>
-              </ListItem>
-            </Tooltip>
-          ))}
-      </List>
-    </Drawer>
+          {sidebarContent}
+        </Box>
+      )}
+
+      {/* Mobile Drawer */}
+      {isMobile && (
+        <>
+          <div className={`mobile-backdrop ${mobileOpen ? 'visible' : ''}`} onClick={toggleMobileDrawer} />
+          <IconButton
+            color="inherit"
+            aria-label="open drawer"
+            edge="start"
+            onClick={toggleMobileDrawer}
+            sx={{
+              position: 'fixed',
+              bottom: 16,
+              right: 16,
+              zIndex: 1100,
+              bgcolor: 'primary.main',
+              color: 'white',
+              boxShadow: 3,
+              '&:hover': {
+                bgcolor: 'primary.dark',
+              }
+            }}
+          >
+            <MenuIcon />
+          </IconButton>
+          
+          <div className={`sidebar mobile-sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
+            {sidebarContent}
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
