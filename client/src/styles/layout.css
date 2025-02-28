@@ -97,6 +97,10 @@
   transition: var(--transition-normal);
   width: 100%;
   position: relative;
+  padding-left: 73px !important; /* Ensure there's space for collapsed sidebar */
+  transition: padding-left var(--transition-normal);
+  z-index: 1 !important; /* Lower z-index to ensure sidebar overlays */
+  padding-left: 0 !important; /* Remove padding so sidebar truly overlays */
 }
 
 .layout-content {
@@ -107,12 +111,21 @@
   margin: 0 auto;
   transition: var(--transition-normal);
   animation: fadeIn 0.5s ease;
+  position: relative;
+  z-index: 1; /* Lower than sidebar */
 }
 
 /* Responsive padding adjustments */
 @media (max-width: 600px) {
   .layout-content {
     padding: var(--spacing-md);
+  }
+}
+
+/* Responsive adjustments for content padding */
+@media (max-width: 1024px) {
+  .layout-content-wrapper {
+    padding-left: 0 !important; /* No padding on mobile/tablet - full overlay */
   }
 }
 
@@ -140,11 +153,12 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: var(--z-appbar);
+  z-index: 1500 !important; /* Lower than sidebar but higher than content */
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
-  padding: var(--spacing-md) var(--spacing-lg);
+  padding: var(--spacing-md) var(--spacing-xl);
+  padding-left: calc(var(--spacing-xl) + 73px); /* Add space for collapsed sidebar */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -152,6 +166,7 @@
   transition: var(--transition-normal);
   border-bottom: 1px solid var(--divider);
   height: 64px;
+  padding-left: var(--spacing-xl) !important; /* Reset padding */
 }
 
 .header.scrolled {
@@ -199,6 +214,13 @@
   gap: var(--spacing-md);
 }
 
+/* Make header adjust based on screen size */
+@media (max-width: 1024px) {
+  .header {
+    padding-left: var(--spacing-xl); /* Reset padding on mobile */
+  }
+}
+
 /* ======= MAIN CONTAINER WITH PAGE TRANSITIONS ======= */
 .page-container {
   flex: 1;
@@ -207,6 +229,8 @@
   margin: 0 auto;
   padding: var(--spacing-xl) 0;
   animation: fadeIn 0.3s ease;
+  position: relative;
+  z-index: 1;
 }
 
 /* Page content container with card styling */
@@ -358,6 +382,16 @@
 @media (min-width: 769px) and (max-width: 1024px) {
   .layout-content {
     padding: var(--spacing-lg);
+  }
+}
+
+/* Layout adjustments to ensure overlay behavior */
+@media (min-width: 1025px) {
+  .layout-content-wrapper,
+  .header {
+    width: 100% !important; /* Ensure full width */
+    margin-left: 0 !important; /* No margin, sidebar will overlay */
+    padding-left: 73px !important; /* Add space for content not under collapsed sidebar */
   }
 }
 
@@ -589,4 +623,26 @@
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
   gap: var(--spacing-md);
   width: 100%;
+}
+
+/* Check and remove any button styles that might conflict with our sidebar toggle */
+button {
+  /* Reset default button styles in case there's a global style affecting our toggle */
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+/* Add a more specific reset that won't affect layout.css but will help our toggle */
+.sidebar button.sidebar-toggle {
+  appearance: none;
+  -webkit-appearance: none;
+  padding: 0;
+  margin: 0;
+  background-clip: padding-box;
+  box-sizing: border-box;
+}
+
+/* Additional overlay styling */
+.sidebar.sidebar-expanded {
+  box-shadow: 0 0 30px rgba(0, 0, 0, 0.2) !important; /* Stronger shadow when expanded */
 }

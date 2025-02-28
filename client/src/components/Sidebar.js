@@ -1,7 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
 import {
-  Box,
   useMediaQuery,
   useTheme,
   IconButton,
@@ -15,9 +14,7 @@ import {
   Palette as PaletteIcon,
   Settings as SettingsIcon,
   Menu as MenuIcon,
-  ChevronLeft as ChevronLeftIcon,
   ExitToApp as LogoutIcon,
-  Badge as BadgeIcon
 } from '@mui/icons-material';
 import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
@@ -25,25 +22,28 @@ import '../styles/sidebar.css';
 const Sidebar = ({ drawerWidth, collapsedWidth }) => {
   const [open, setOpen] = useState(true);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(false);
+  const toggleButtonRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
   const theme = useTheme();
   const isMobile = useMediaQuery(theme.breakpoints.down('sm'));
+  const isTablet = useMediaQuery(theme.breakpoints.down('lg'));
   
   // Close sidebar on mobile when route changes
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile || isTablet) {
       setMobileOpen(false);
     }
-  }, [location.pathname, isMobile]);
+  }, [location.pathname, isMobile, isTablet]);
   
-  // Auto collapse sidebar on mobile
+  // Auto collapse sidebar on mobile and tablet
   useEffect(() => {
-    if (isMobile) {
+    if (isMobile || isTablet) {
       setOpen(false);
     }
-  }, [isMobile]);
+  }, [isMobile, isTablet]);
 
   const menuItems = [
     { 
@@ -85,11 +85,17 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
   ];
 
   const handleToggle = () => {
-    setOpen(!open);
-  };
-
-  const toggleMobileDrawer = () => {
-    setMobileOpen(!mobileOpen);
+    if (isMobile || isTablet) {
+      setMobileOpen(!mobileOpen);
+    } else {
+      setOpen(!open);
+      setIsAnimating(true);
+      
+      // Remove animation class after animation completes
+      setTimeout(() => {
+        setIsAnimating(false);
+      }, 400); // Match animation duration
+    }
   };
 
   const getInitials = (name) => {
@@ -105,33 +111,35 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
     item => item.roles.includes(user.role)
   );
 
+  // Simply render the sidebar with the appropriate classes
+  const sidebarClassName = `sidebar ${open ? 'sidebar-expanded' : 'sidebar-collapsed'} ${mobileOpen ? 'showing' : ''}`;
+
   const sidebarContent = (
-    <div className={`sidebar ${open ? 'sidebar-expanded' : 'sidebar-collapsed'}`}>
-      {/* Sidebar Header */}
+    <div className={sidebarClassName}>
+      {/* Sidebar Header - simplified without logo */}
       <div className="sidebar-header">
-        <div className="sidebar-logo-container">
-          <div className="sidebar-logo">
-            <BadgeIcon />
-          </div>
-          <Typography variant="h6" className="sidebar-logo-text">
+        {/* Only show the text when expanded */}
+        {open && (
+          <Typography variant="h6" className="sidebar-title">
             AuthSys
           </Typography>
-        </div>
+        )}
+        {/* Completely rewritten toggle button with explicit line elements */}
         <button 
-          className="sidebar-toggle"
+          ref={toggleButtonRef}
+          className={`sidebar-toggle ${open ? 'expanded' : ''} ${isAnimating ? 'sidebar-toggle-animation' : ''}`}
           onClick={handleToggle}
           aria-label={open ? "Collapse sidebar" : "Expand sidebar"}
         >
-          <ChevronLeftIcon 
-            className={`sidebar-toggle-icon ${open ? 'expanded' : ''}`} 
-          />
+          <div className="toggle-line-top"></div>
+          <div className="toggle-line-bottom"></div>
         </button>
       </div>
 
       {/* Navigation Items */}
       <nav className="sidebar-nav">
         <div className="sidebar-nav-section">
-          <div className="sidebar-section-title">Main Navigation</div>
+          {open && <div className="sidebar-section-title">Main Navigation</div>}
           
           {filteredMenuItems.map((item) => (
             <div 
@@ -144,9 +152,11 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
               <div className="nav-icon">
                 {item.icon}
               </div>
-              <div className="nav-text">
-                {item.text}
-              </div>
+              {open && (
+                <div className="nav-text">
+                  {item.text}
+                </div>
+              )}
               {!open && (
                 <div className="nav-tooltip">
                   {item.text}
@@ -164,22 +174,27 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
             <div className="user-avatar">
               {getInitials(user.name)}
             </div>
-            <div>
-              <div className="user-name">
-                {user.name}
+            {open && (
+              <div>
+                <div className="user-name">
+                  {user.name}
+                </div>
+                <div className="user-role">
+                  {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
+                </div>
               </div>
-              <div className="user-role">
-                {user.role.charAt(0).toUpperCase() + user.role.slice(1)}
-              </div>
-            </div>
+            )}
           </div>
-          <button 
-            className="user-logout"
-            onClick={logout}
-            aria-label="Logout"
-          >
-            <LogoutIcon fontSize="small" />
-          </button>
+          {/* Only render logout button when sidebar is expanded */}
+          {open && (
+            <button 
+              className="user-logout"
+              onClick={logout}
+              aria-label="Logout"
+            >
+              <LogoutIcon fontSize="small" />
+            </button>
+          )}
         </div>
       </div>
     </div>
@@ -187,37 +202,21 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
 
   return (
     <>
-      {/* Desktop Drawer */}
-      {!isMobile && (
-        <Box 
-          component="aside"
-          sx={{
-            width: open ? drawerWidth : collapsedWidth,
-            flexShrink: 0,
-            '& .MuiDrawer-paper': {
-              width: open ? drawerWidth : collapsedWidth,
-              boxSizing: 'border-box',
-              transition: theme => theme.transitions.create('width', {
-                easing: theme.transitions.easing.sharp,
-                duration: theme.transitions.duration.enteringScreen,
-              }),
-              overflowX: 'hidden',
-            },
-          }}
-        >
-          {sidebarContent}
-        </Box>
-      )}
-
-      {/* Mobile Drawer */}
-      {isMobile && (
+      {/* Only render the sidebar directly - no Box container needed */}
+      {sidebarContent}
+      
+      {/* Mobile menu toggle button - always visible on mobile */}
+      {(isMobile || isTablet) && (
         <>
-          <div className={`mobile-backdrop ${mobileOpen ? 'visible' : ''}`} onClick={toggleMobileDrawer} />
+          <div 
+            className={`mobile-backdrop ${mobileOpen ? 'visible' : ''}`} 
+            onClick={() => setMobileOpen(false)}
+          />
           <IconButton
             color="inherit"
             aria-label="open drawer"
             edge="start"
-            onClick={toggleMobileDrawer}
+            onClick={() => setMobileOpen(!mobileOpen)}
             sx={{
               position: 'fixed',
               bottom: 16,
@@ -233,10 +232,6 @@ const Sidebar = ({ drawerWidth, collapsedWidth }) => {
           >
             <MenuIcon />
           </IconButton>
-          
-          <div className={`sidebar mobile-sidebar ${mobileOpen ? 'mobile-open' : ''}`}>
-            {sidebarContent}
-          </div>
         </>
       )}
     </>

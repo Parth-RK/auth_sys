@@ -31,7 +31,8 @@ const Layout = ({ children }) => {
       <div 
         className="scroll-progress" 
         style={{ 
-          transform: `scaleX(${scrolled ? window.scrollY / (document.body.scrollHeight - window.innerHeight) : 0})` 
+          transform: `scaleX(${scrolled ? window.scrollY / (document.body.scrollHeight - window.innerHeight) : 0})`,
+          zIndex: 2500 /* Ensure it's above everything */
         }} 
       />
       
@@ -40,14 +41,11 @@ const Layout = ({ children }) => {
         collapsedWidth={COLLAPSED_DRAWER_WIDTH} 
       />
       
-      <div className="layout-content-wrapper" style={{ 
-        marginLeft: `${COLLAPSED_DRAWER_WIDTH}px`,
-        width: `calc(100% - ${COLLAPSED_DRAWER_WIDTH}px)`,
-      }}>
+      <div className="layout-content-wrapper">
         <header className={`header ${scrolled ? 'scrolled' : ''}`}>
           <div className="header-brand">
             <div className="header-logo">
-              <span className="material-icons">dashboard</span>
+              <span className="material-icons"></span>
             </div>
             <div className="header-title">Auth System</div>
           </div>
