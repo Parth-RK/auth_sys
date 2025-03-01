@@ -9,6 +9,9 @@ const instance = axios.create({
   }
 });
 
+// Add debugging to see what URL is being used
+console.log('API baseURL:', instance.defaults.baseURL);
+
 // Request interceptor
 instance.interceptors.request.use(
   (config) => {

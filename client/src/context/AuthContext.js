@@ -4,7 +4,6 @@ import axios from 'axios';
 
 axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com'; //'http://localhost:5000';
 
-
 const AuthContext = createContext(null);
 
 export const AuthProvider = ({ children }) => {
@@ -50,8 +49,8 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // Add base URL to axios request
-      const res = await axios.post(`${process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com/api'}/auth/register`, {
+      // Use the default axios configuration which already has the baseURL set
+      const res = await axios.post('/api/auth/register', {
         name: userData.name,
         email: userData.email,
         password: userData.password
