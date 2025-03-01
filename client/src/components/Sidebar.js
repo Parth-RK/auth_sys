@@ -62,7 +62,7 @@ const Sidebar = () => {
       text: 'Appearance', 
       icon: <PaletteIcon />, 
       path: '/appearance', 
-      roles: ['admin', 'superadmin']
+      roles: ['user', 'manager', 'admin', 'superadmin']
     },
     { 
       text: 'Settings', 
