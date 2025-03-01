@@ -2,15 +2,16 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com',//'http://localhost:5000/api',
+  // Fix baseURL to properly handle API paths
+  baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Add debugging to see what URL is being used
-console.log('API baseURL:', instance.defaults.baseURL);
+// Add more detailed debugging to see what URL is being used
+console.log('axiosConfig using baseURL:', instance.defaults.baseURL);
 
 // Request interceptor
 instance.interceptors.request.use(

@@ -34,8 +34,11 @@ const app = express();
 
 // Middleware
 debugLog('SERVER', 'Setting up middleware');
-app.use(cors());
-debugLog('SERVER', 'CORS enabled');
+app.use(cors({
+  origin: '*', // Allow all origins while debugging
+  credentials: true
+}));
+debugLog('SERVER', 'CORS enabled for all origins (debug mode)');
 
 app.use(helmet());
 debugLog('SERVER', 'Helmet security enabled');
