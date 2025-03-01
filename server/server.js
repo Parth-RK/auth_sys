@@ -35,10 +35,17 @@ const app = express();
 // Middleware
 debugLog('SERVER', 'Setting up middleware');
 app.use(cors({
-  origin: '*', // Allow all origins while debugging
-  credentials: true
+  origin: [
+    'https://auth-sys-frontend.onrender.com', // Add your specific frontend URL
+    'http://localhost:3000' // For local development
+  ],
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization'],
+  credentials: true,
+  preflightContinue: false,
+  optionsSuccessStatus: 204
 }));
-debugLog('SERVER', 'CORS enabled for all origins (debug mode)');
+debugLog('SERVER', 'CORS configured with specific origins');
 
 app.use(helmet());
 debugLog('SERVER', 'Helmet security enabled');
@@ -59,6 +66,16 @@ app.use((req, res, next) => {
 
 app.use(rateLimit(rateLimiter));
 debugLog('SERVER', 'Rate limiter enabled');
+
+// Add a debugging route for CORS testing
+app.options('*', cors());
+app.get('/api/cors-test', (req, res) => {
+  debugLog('CORS', 'CORS test endpoint called');
+  res.json({ 
+    message: 'CORS is configured correctly',
+    origin: req.headers.origin || 'No origin detected'
+  });
+});
 
 // Routes
 debugLog('SERVER', 'Setting up routes');
