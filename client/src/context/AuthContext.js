@@ -2,8 +2,8 @@
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 
-// Fix baseURL to properly handle API paths
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com/api';
+// Fix baseURL to properly handle API paths - remove the trailing /api since we add it in the routes
+axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com';
 
 // Log the actual baseURL being used for debugging
 console.log('AuthContext using baseURL:', axios.defaults.baseURL);
@@ -26,7 +26,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async (token) => {
     try {
-      const res = await axios.get('/auth/profile', {
+      const res = await axios.get('/api/auth/profile', {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
@@ -40,7 +40,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const res = await axios.post('/auth/login', credentials);
+      const res = await axios.post('/api/auth/login', credentials);
       const { token, user } = res.data;
       localStorage.setItem('token', token);
       setUser(user);
@@ -53,8 +53,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      // Use the default axios configuration which already has the baseURL set
-      const res = await axios.post('/auth/register', {
+      const res = await axios.post('/api/auth/register', {
         name: userData.name,
         email: userData.email,
         password: userData.password

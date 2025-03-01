@@ -2,15 +2,20 @@
 import axios from 'axios';
 
 const instance = axios.create({
-  // Fix baseURL to properly handle API paths
-  baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com/api',
+  // Fix baseURL to match AuthContext.js and avoid path duplication
+  baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'
   }
 });
 
-// Add more detailed debugging to see what URL is being used
+// Add debugging to show the full URL construction
+const debugRequest = (url) => {
+  console.log(`API Request to: ${instance.defaults.baseURL}${url}`);
+};
+
+// Add debugging to both axiosConfig and request/response
 console.log('axiosConfig using baseURL:', instance.defaults.baseURL);
 
 // Request interceptor
@@ -39,10 +44,22 @@ instance.interceptors.response.use(
 
 // API request helpers
 export const api = {
-  get: (url, config = {}) => instance.get(url, config),
-  post: (url, data, config = {}) => instance.post(url, data, config),
-  put: (url, data, config = {}) => instance.put(url, data, config),
-  delete: (url, config = {}) => instance.delete(url, config)
+  get: (url, config = {}) => {
+    debugRequest(url);
+    return instance.get(url, config);
+  },
+  post: (url, data, config = {}) => {
+    debugRequest(url);
+    return instance.post(url, data, config);
+  },
+  put: (url, data, config = {}) => {
+    debugRequest(url);
+    return instance.put(url, data, config);
+  },
+  delete: (url, config = {}) => {
+    debugRequest(url);
+    return instance.delete(url, config);
+  }
 };
 
 export default instance;
