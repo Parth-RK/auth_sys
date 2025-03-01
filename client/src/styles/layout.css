@@ -217,7 +217,7 @@
 /* Make header adjust based on screen size */
 @media (max-width: 1024px) {
   .header {
-    padding-left: var(--spacing-xl); /* Reset padding on mobile */
+    padding-left: var(--spacing-xl);
   }
 }
 
