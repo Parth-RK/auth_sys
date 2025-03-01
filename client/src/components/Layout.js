@@ -62,7 +62,7 @@ const Layout = ({ children }) => {
             <a href="/terms" className="footer-link">Terms of Service</a>
             <a href="/support" className="footer-link">Contact Support</a>
           </div>
-          <div>© {new Date().getFullYear()} Auth System. All rights reserved.</div>
+          <div>© {new Date().getFullYear()} PRK Auth System. All rights reserved.</div>
         </footer>
       </div>
     </div>

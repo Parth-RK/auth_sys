@@ -7,6 +7,7 @@ import { Dashboard } from './components/Dashboard';
 import PrivilegeControl from './components/PrivilegeControl';
 import UserManagement from './components/UserManagement';
 import ProtectedRoute from './components/ProtectedRoute';
+import Appearance from './components/Appearance';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Layout from './components/Layout';
 import './styles/App.css';
@@ -58,6 +59,15 @@ function App() {
                 </Layout>
               </ProtectedRoute>
             } />
+
+            <Route path="/appearance" element={
+              <ProtectedRoute>
+                <Layout>
+                  <Appearance />
+                </Layout>
+              </ProtectedRoute>
+            } />
+            
           </Routes>
         </Router>
       </AuthProvider>
