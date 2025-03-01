@@ -1,3 +1,6 @@
+/* Import the centralized color variables */
+@import './colors.css';
+
 /* ======= DASHBOARD STYLES ======= */
 /* Premium dashboard styling with advanced animations */
 
@@ -5,20 +8,7 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
 
 .dashboard-container {
-  --primary-color: #2196f3;
-  --primary-light: #6ec6ff;
-  --primary-dark: #0069c0;
-  --secondary-color: #9c27b0;
-  --secondary-light: #d05ce3;
-  --secondary-dark: #6a0080;
-  --success: #4caf50;
-  --error: #f44336;
-  --warning: #ff9800;
-  --info: #2196f3;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --background-light: #f5f8fa;
-  --background-paper: #ffffff;
+  /* Border radius and other non-color variables */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, 0.08);
   --shadow-lg: 0 12px 28px rgba(0, 0, 0, 0.12);
@@ -470,14 +460,6 @@
 }
 
 /* ======= DARK MODE (Optional - can be toggled via JS) ======= */
-
-.dark-mode {
-  --text-primary: #e0e0e0;
-  --text-secondary: #aaaaaa;
-  --background-light: #121212;
-  --background-paper: #1e1e1e;
-}
-
 .dark-mode .app-bar {
   background: rgba(30, 30, 30, 0.9) !important;
 }
@@ -488,5 +470,5 @@
 }
 
 .dark-mode .user-menu-paper::before {
-  background-color: #1e1e1e;
+  background-color: var(--dark-background-paper);
 }

@@ -1,3 +1,6 @@
+/* Import the centralized color variables */
+@import './colors.css';
+
 .App {
   text-align: center;
 }

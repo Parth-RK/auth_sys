@@ -1,16 +1,8 @@
+/* Import the centralized color variables */
+@import './colors.css';
+
 /* Shared CSS variables from layout.css */
 :root {
-  /* Color variables are inherited from layout.css */
-  --primary-color: #2196f3;
-  --primary-light: #64b5f6;
-  --primary-dark: #1565c0;
-  --secondary-color: #9c27b0;
-  --secondary-light: #ba68c8;
-  --secondary-dark: #7b1fa2;
-  --text-primary: #212121;
-  --text-secondary: #757575;
-  --background-paper: #ffffff;
-  --divider: rgba(0, 0, 0, 0.08);
   --spacing-xs: 4px;
   --spacing-sm: 8px;
   --spacing-md: 16px;
@@ -498,15 +490,14 @@
   transition: opacity 150ms;
 }
 
-
 /* ======= DARK MODE SUPPORT ======= */
 .dark-theme .sidebar {
-  background-color: #1e1e1e;
-  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  background-color: var(--dark-background-paper);
+  border-right: 1px solid var(--dark-divider);
 }
 
 .dark-theme .sidebar-header {
-  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  border-bottom: 1px solid var(--dark-divider);
 }
 
 .dark-theme .nav-item.active {
