@@ -1,6 +1,13 @@
 import React, { useState, useRef } from 'react';
 import { useLocation, useNavigate } from 'react-router-dom';
-import { Typography } from '@mui/material';
+import { 
+  Typography,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogActions,
+  Button
+} from '@mui/material';
 import {
   Dashboard as DashboardIcon,
   People as PeopleIcon,
@@ -16,10 +23,15 @@ import '../styles/sidebar.css';
 const Sidebar = () => {
   const [expanded, setExpanded] = useState(false);
   const [isAnimating, setIsAnimating] = useState(true);
+  const [logoutDialog, setLogoutDialog] = useState(false);
   const toggleButtonRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
   const { user, logout } = useAuth();
+
+  const handleLogout = () => {
+    setLogoutDialog(true);
+  };
 
   const menuItems = [
     { 
@@ -155,7 +167,7 @@ const Sidebar = () => {
             {expanded && (
               <button 
                 className="user-logout"
-                onClick={logout}
+                onClick={handleLogout}
                 aria-label="Logout"
               >
                 <LogoutIcon fontSize="small" />
@@ -164,6 +176,41 @@ const Sidebar = () => {
           </div>
         </div>
       </div>
+
+      {/* Updated Logout Confirmation Dialog */}
+      <Dialog 
+        open={logoutDialog} 
+        onClose={() => setLogoutDialog(false)}
+        className="dialog"
+      >
+        <DialogTitle className="dialog-title" sx={{ color: 'error.main' }}>
+          Confirm Logout
+        </DialogTitle>
+        <DialogContent className="dialog-content">
+          <Typography>
+            Are you sure you want to logout?
+          </Typography>
+        </DialogContent>
+        <DialogActions className="dialog-actions">
+          <Button 
+            onClick={() => setLogoutDialog(false)}
+            variant="outlined"
+          >
+            Cancel
+          </Button>
+          <Button
+            variant="contained"
+            color="error"
+            className="confirm-button"
+            onClick={() => {
+              logout();
+              setLogoutDialog(false);
+            }}
+          >
+            Confirm
+          </Button>
+        </DialogActions>
+      </Dialog>
     </>
   );
 };

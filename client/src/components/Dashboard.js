@@ -22,7 +22,6 @@ import {
 import {
   Security as SecurityIcon,
   Person as PersonIcon,
-  ExitToApp as LogoutIcon,
   Assignment as AssignmentIcon,
   SupervisorAccount as AdminIcon,
   Dashboard as DashboardIcon
@@ -58,10 +57,6 @@ export const Dashboard = () => {
   const roleData = roleConfig[user.role];
   const [logoutDialog, setLogoutDialog] = useState(false);
 
-  const handleLogout = () => {
-    setLogoutDialog(true);
-  };
-
   const handleNavigate = (path) => {
     console.log('Navigating to:', path); // Debug
     navigate(path);
@@ -92,13 +87,6 @@ export const Dashboard = () => {
                 textTransform: 'capitalize'
               }}
             />
-            <Button 
-              color="inherit" 
-              onClick={handleLogout}
-              startIcon={<LogoutIcon />}
-            >
-              Logout
-            </Button>
           </Box>
         </Toolbar>
       </AppBar>
