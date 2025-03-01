@@ -79,7 +79,7 @@ const UserManagement = () => {
   const fetchUsers = async () => {
     try {
       console.log('Fetching users...'); // Debug log
-      const response = await api.get('/users');
+      const response = await api.get('/api/users');
       console.log('Users response:', response); // Debug log
       setUsers(response.data);
     } catch (err) {
@@ -92,7 +92,7 @@ const UserManagement = () => {
 
   const handleUpdateUser = async (userId, updateData = formData) => {
     try {
-      const response = await api.put(`/users/${userId}`, updateData);
+      const response = await api.put(`/api/users/${userId}`, updateData);
       setUsers(users.map(user => 
         user._id === userId ? response.data : user
       ));
@@ -108,7 +108,7 @@ const UserManagement = () => {
 
   const handleDeleteUser = async (userId) => {
     try {
-      await api.delete(`/users/${userId}`);
+      await api.delete(`/api/users/${userId}`);
       setUsers(users.filter(user => user._id !== userId));
       showSnackbar('User deleted successfully');
     } catch (err) {

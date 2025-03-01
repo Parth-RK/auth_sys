@@ -1,6 +1,9 @@
 // client/src/utils/axiosConfig.js
 import axios from 'axios';
 
+// Add a constant to ensure consistency
+const API_PREFIX = '/api';
+
 const instance = axios.create({
   // Fix baseURL to match AuthContext.js and avoid path duplication
   baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com',
@@ -12,7 +15,10 @@ const instance = axios.create({
 
 // Add debugging to show the full URL construction
 const debugRequest = (url) => {
-  console.log(`API Request to: ${instance.defaults.baseURL}${url}`);
+  // Add a check to ensure URL starts with /api
+  const apiUrl = url.startsWith(API_PREFIX) ? url : `${API_PREFIX}${url}`;
+  console.log(`API Request to: ${instance.defaults.baseURL}${apiUrl}`);
+  return apiUrl;
 };
 
 // Add debugging to both axiosConfig and request/response
@@ -42,23 +48,23 @@ instance.interceptors.response.use(
   }
 );
 
-// API request helpers
+// Improved API request helpers with automatic /api prefix handling
 export const api = {
   get: (url, config = {}) => {
-    debugRequest(url);
-    return instance.get(url, config);
+    const apiUrl = debugRequest(url);
+    return instance.get(apiUrl, config);
   },
   post: (url, data, config = {}) => {
-    debugRequest(url);
-    return instance.post(url, data, config);
+    const apiUrl = debugRequest(url);
+    return instance.post(apiUrl, data, config);
   },
   put: (url, data, config = {}) => {
-    debugRequest(url);
-    return instance.put(url, data, config);
+    const apiUrl = debugRequest(url);
+    return instance.put(apiUrl, data, config);
   },
   delete: (url, config = {}) => {
-    debugRequest(url);
-    return instance.delete(url, config);
+    const apiUrl = debugRequest(url);
+    return instance.delete(apiUrl, config);
   }
 };
 
