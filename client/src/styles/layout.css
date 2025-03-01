@@ -89,18 +89,17 @@
   overflow-x: hidden;
 }
 
+/* ======= LAYOUT CONTENT WRAPPER ======= */
 .layout-content-wrapper {
   display: flex;
   flex-direction: column;
   flex: 1;
   min-height: 100vh;
   transition: var(--transition-normal);
-  width: 100%;
+  width: calc(100% - 80px); /* Account for collapsed sidebar width */
+  margin-left: 80px; /* Add margin equal to collapsed sidebar width */
   position: relative;
-  padding-left: 73px !important; /* Ensure there's space for collapsed sidebar */
-  transition: padding-left var(--transition-normal);
-  z-index: 1 !important; /* Lower z-index to ensure sidebar overlays */
-  padding-left: 0 !important; /* Remove padding so sidebar truly overlays */
+  z-index: 1;
 }
 
 .layout-content {
@@ -153,12 +152,11 @@
 .header {
   position: sticky;
   top: 0;
-  z-index: 1500 !important; /* Lower than sidebar but higher than content */
+  z-index: 1500;
   background: rgba(255, 255, 255, 0.9);
   backdrop-filter: blur(10px);
   -webkit-backdrop-filter: blur(10px);
   padding: var(--spacing-md) var(--spacing-xl);
-  padding-left: calc(var(--spacing-xl) + 73px); /* Add space for collapsed sidebar */
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -166,7 +164,7 @@
   transition: var(--transition-normal);
   border-bottom: 1px solid var(--divider);
   height: 64px;
-  padding-left: var(--spacing-xl) !important; /* Reset padding */
+  width: 100%; /* Full width of the content wrapper */
 }
 
 .header.scrolled {
@@ -347,8 +345,8 @@
 /* Mobile layout adjustments */
 @media (max-width: 768px) {
   .layout-content-wrapper {
-    margin-left: 0 !important;
-    width: 100% !important;
+    margin-left: 80px; /* Keep the margin on small screens */
+    width: calc(100% - 80px); /* Keep the width adjusted */
   }
   
   .layout-content {
@@ -378,6 +376,17 @@
   }
 }
 
+/* For very small screens, ensure content is still accessible */
+@media (max-width: 480px) {
+  .layout-content {
+    padding: var(--spacing-sm); /* Reduce content padding */
+  }
+  
+  .header-title {
+    font-size: calc(var(--font-size-md) - 0.125rem); /* Even smaller title */
+  }
+}
+
 /* Tablet layout adjustments */
 @media (min-width: 769px) and (max-width: 1024px) {
   .layout-content {
@@ -392,6 +401,13 @@
     width: 100% !important; /* Ensure full width */
     margin-left: 0 !important; /* No margin, sidebar will overlay */
     padding-left: 73px !important; /* Add space for content not under collapsed sidebar */
+  }
+}
+
+/* Ensure adequate spacing for the sidebar during mobile device orientation changes */
+@media screen and (orientation: landscape) and (max-height: 500px) {
+  .layout-content-wrapper {
+    margin-left: 80px; /* Maintain consistent margin */
   }
 }
 

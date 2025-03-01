@@ -3,8 +3,6 @@ import { CssBaseline } from '@mui/material';
 import Sidebar from './Sidebar';
 import '../styles/layout.css';
 
-const DRAWER_WIDTH = 240;
-const COLLAPSED_DRAWER_WIDTH = 73;
 
 const Layout = ({ children }) => {
   const [scrolled, setScrolled] = useState(false);
@@ -32,22 +30,20 @@ const Layout = ({ children }) => {
         className="scroll-progress" 
         style={{ 
           transform: `scaleX(${scrolled ? window.scrollY / (document.body.scrollHeight - window.innerHeight) : 0})`,
-          zIndex: 2500 /* Ensure it's above everything */
+          zIndex: 2500
         }} 
       />
       
-      <Sidebar 
-        drawerWidth={DRAWER_WIDTH} 
-        collapsedWidth={COLLAPSED_DRAWER_WIDTH} 
-      />
+      <Sidebar />
       
+      {/* Apply left margin to push content away from sidebar */}
       <div className="layout-content-wrapper">
         <header className={`header ${scrolled ? 'scrolled' : ''}`}>
           <div className="header-brand">
             <div className="header-logo">
               <span className="material-icons"></span>
             </div>
-            <div className="header-title">Auth System</div>
+            <div className="header-title">Authentication System</div>
           </div>
           <div className="header-actions">
             {/* Header actions can be added here */}

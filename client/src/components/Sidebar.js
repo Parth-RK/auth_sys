@@ -14,8 +14,8 @@ import { useAuth } from '../context/AuthContext';
 import '../styles/sidebar.css';
 
 const Sidebar = () => {
-  const [expanded, setExpanded] = useState(true);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [expanded, setExpanded] = useState(false);
+  const [isAnimating, setIsAnimating] = useState(true);
   const toggleButtonRef = useRef(null);
   const location = useLocation();
   const navigate = useNavigate();
