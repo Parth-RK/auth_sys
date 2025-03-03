@@ -3,10 +3,16 @@ import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
 import { URLS } from '../utils/urls';
 
-axios.defaults.baseURL = URLS.API.BASE;
+// Create a dedicated axios instance for auth with the correct baseURL
+const authAxios = axios.create({
+  baseURL: URLS.API.BASE,
+  headers: {
+    'Content-Type': 'application/json'
+  }
+});
 
 // Log the actual baseURL being used for debugging
-console.log('AuthContext using baseURL:', axios.defaults.baseURL);
+console.log('AuthContext creating axios instance with baseURL:', URLS.API.BASE);
 
 const AuthContext = createContext(null);
 
@@ -26,7 +32,11 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async (token) => {
     try {
-      const res = await axios.get('/api/auth/profile', {
+      // Use the authAxios instance with the API endpoint
+      const url = URLS.API.AUTH.PROFILE;
+      console.log(`Loading user from: ${URLS.API.BASE}${url}`);
+      
+      const res = await authAxios.get(url, {
         headers: { Authorization: `Bearer ${token}` }
       });
       setUser(res.data);
@@ -40,12 +50,17 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const res = await axios.post('/api/auth/login', credentials);
+      // Use the authAxios instance with the API endpoint
+      const url = URLS.API.AUTH.LOGIN;
+      console.log(`Logging in to: ${URLS.API.BASE}${url}`);
+      
+      const res = await authAxios.post(url, credentials);
       const { token, user } = res.data;
       localStorage.setItem('token', token);
       setUser(user);
       return user;
     } catch (err) {
+      console.error('Login error:', err);
       setError(err.response?.data?.message || 'Login failed');
       throw err;
     }
@@ -53,7 +68,11 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const res = await axios.post('/api/auth/register', {
+      // Use the authAxios instance with the API endpoint
+      const url = URLS.API.AUTH.REGISTER;
+      console.log(`Registering at: ${URLS.API.BASE}${url}`);
+      
+      const res = await authAxios.post(url, {
         name: userData.name,
         email: userData.email,
         password: userData.password

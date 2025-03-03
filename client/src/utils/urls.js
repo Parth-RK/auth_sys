@@ -1,4 +1,12 @@
 // URL Configuration for the entire application
+
+// Make sure the baseURL is correct and has no trailing slash
+const baseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+
+// Debug URL configuration
+console.log('Environment variable REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
+console.log('URL Configuration using baseUrl:', baseUrl);
+
 export const URLS = {
   // Frontend routes
   LOGIN: '/login',
@@ -9,15 +17,16 @@ export const URLS = {
   USERS: '/users',
   APPEARANCE: '/appearance',
   
-  // API URLs
+  // API URLs with full absolute paths
   API: {
-    BASE: process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000',
+    BASE: baseUrl,
     AUTH: {
-      LOGIN: '/auth/login',
-      REGISTER: '/auth/register',
-      VERIFY: '/auth/verify',
-      LOGOUT: '/auth/logout',
-      PROFILE: '/auth/profile',
+      // Use full paths with API prefix to avoid path construction issues
+      LOGIN: '/api/auth/login',
+      REGISTER: '/api/auth/register',
+      VERIFY: '/api/auth/verify',
+      LOGOUT: '/api/auth/logout',
+      PROFILE: '/api/auth/profile',
     },
     USERS: '/api/users',
     PRIVILEGES: '/api/privileges',
