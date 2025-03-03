@@ -60,6 +60,7 @@
   background: linear-gradient(135deg, var(--primary-color), var(--secondary-color)) !important;
   box-shadow: 0 12px 24px rgba(33, 150, 243, 0.3) !important;
   transition: transform var(--transition-medium), box-shadow var(--transition-medium) !important;
+  padding: 2rem;
 }
 
 .welcome-card:hover {
@@ -96,6 +97,15 @@
   z-index: 2;
 }
 
+.welcome-title {
+  font-weight: 700 !important;
+}
+
+.welcome-subtitle {
+  opacity: 0.85;
+  max-width: 500px;
+}
+
 .feature-card {
   border-radius: var(--border-radius-md);
   background-color: var(--background-paper);
@@ -127,6 +137,17 @@
 .feature-card:hover::before {
   transform: scaleX(1);
   transform-origin: 0 0;
+}
+
+.feature-card.dragging {
+  transform: rotate(2deg) scale(1.02);
+  opacity: 0.9;
+  z-index: 10;
+  cursor: grabbing !important;
+}
+
+.feature-card.dragging::before {
+  transform: scaleX(1);
 }
 
 .feature-icon {
@@ -211,6 +232,15 @@
 .chip:hover {
   transform: translateY(-2px) !important;
   box-shadow: 0 4px 8px rgba(0,0,0,0.12) !important;
+}
+
+.role-chip {
+  transition: all var(--transition-medium) !important;
+}
+
+.role-chip:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1) !important;
 }
 
 .user-menu-paper {
@@ -298,12 +328,33 @@
   }
 }
 
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+@keyframes badge-bounce {
+  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
+  40% { transform: translateY(-5px); }
+  60% { transform: translateY(-2px); }
+}
+
 .fade-in {
   animation: fadeIn var(--transition-medium) forwards;
 }
 
 .slide-in {
   animation: slideInRight var(--transition-medium) forwards;
+}
+
+.float-animation {
+  animation: float 4s ease-in-out infinite;
 }
 
 .stagger-item-1 { animation-delay: 0.1s; }
@@ -340,6 +391,11 @@
     width: 90% !important;
     max-width: 350px !important;
   }
+
+  /* Adjust padding at bottom for mobile navigation */
+  .main-content {
+    padding-bottom: 5rem !important;
+  }
 }
 
 /* Tablet (medium devices) */
@@ -370,6 +426,13 @@
   
   .action-button {
     padding: 0.75rem 2rem !important;
+  }
+}
+
+/* Support for newer display types */
+@supports (padding: max(0px)) {
+  .mobile-bottom-nav {
+    padding-bottom: max(0.5rem, env(safe-area-inset-bottom));
   }
 }
 
@@ -405,20 +468,9 @@
   animation: shimmer 1.5s infinite;
 }
 
-@keyframes shimmer {
-  0% { background-position: -200% 0; }
-  100% { background-position: 200% 0; }
-}
-
 /* Notification badge bounce animation */
 .badge-notification {
   animation: badge-bounce 2s ease infinite;
-}
-
-@keyframes badge-bounce {
-  0%, 20%, 50%, 80%, 100% { transform: translateY(0); }
-  40% { transform: translateY(-5px); }
-  60% { transform: translateY(-2px); }
 }
 
 /* Subtle background pattern */
@@ -471,4 +523,238 @@
 
 .dark-mode .user-menu-paper::before {
   background-color: var(--dark-background-paper);
+}
+
+.dark-mode {
+  --background-light: #121212;
+  --background-paper: #1e1e1e;
+  --text-primary: #ffffff;
+  --text-secondary: rgba(255, 255, 255, 0.7);
+}
+
+.dark-mode .sidebar-drawer .MuiDrawer-paper {
+  background: linear-gradient(180deg, #1e1e1e 0%, #252525 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .app-bar {
+  background: rgba(30, 30, 30, 0.8) !important;
+}
+
+.dark-mode .mobile-bottom-nav {
+  background-color: rgba(30, 30, 30, 0.9) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .welcome-card {
+  background: linear-gradient(135deg, #1e3b70, #29539b) !important;
+}
+
+.dark-mode .stat-card {
+  background-color: #252525;
+  border: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.dark-mode .MuiPaper-root {
+  background-color: #1e1e1e;
+  color: #ffffff;
+}
+
+.dark-mode .nav-item.active {
+  background-color: rgba(33, 150, 243, 0.15) !important;
+}
+
+/* ======= SIDEBAR NAVIGATION ======= */
+.sidebar-drawer {
+  transition: all var(--transition-medium);
+}
+
+.sidebar-drawer .MuiDrawer-paper {
+  border-right: none;
+  background: linear-gradient(180deg, rgba(255,255,255,1) 0%, rgba(250,252,255,1) 100%);
+  box-shadow: var(--shadow-md);
+}
+
+.sidebar-content {
+  padding-top: 1rem;
+}
+
+.nav-item {
+  margin: 0.3rem 0.5rem !important;
+  border-radius: var(--border-radius-md) !important;
+  transition: all var(--transition-medium) !important;
+}
+
+.nav-item.active {
+  background-color: rgba(33, 150, 243, 0.08) !important;
+  font-weight: 500 !important;
+}
+
+.nav-item:hover {
+  background-color: rgba(33, 150, 243, 0.05) !important;
+  transform: translateX(5px);
+}
+
+.nav-item.logout:hover {
+  background-color: rgba(244, 67, 54, 0.05) !important;
+}
+
+/* ======= STAT CARDS ======= */
+.stat-card {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+  position: relative;
+}
+
+.stat-icon {
+  border-radius: 30% !important;
+  transition: all var(--transition-fast);
+}
+
+.stat-card:hover .stat-icon {
+  transform: scale(1.1) rotate(10deg);
+}
+
+.stat-icon-0 {
+  background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%) !important;
+}
+
+.stat-icon-1 {
+  background: linear-gradient(135deg, #43e97b 0%, #38f9d7 100%) !important;
+}
+
+.stat-icon-2 {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%) !important;
+}
+
+.stat-icon-3 {
+  background: linear-gradient(135deg, #a18cd1 0%, #fbc2eb 100%) !important;
+}
+
+.counter-value {
+  background: linear-gradient(90deg, var(--primary-dark), var(--secondary-color));
+  background-clip: text;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  font-weight: 700 !important;
+}
+
+.progress-0 .MuiLinearProgress-bar { background-color: #4facfe !important; }
+.progress-1 .MuiLinearProgress-bar { background-color: #43e97b !important; }
+.progress-2 .MuiLinearProgress-bar { background-color: #fa709a !important; }
+.progress-3 .MuiLinearProgress-bar { background-color: #a18cd1 !important; }
+
+/* ======= TAB NAVIGATION ======= */
+.tab-container {
+  border-radius: var(--border-radius-md);
+  overflow: hidden;
+}
+
+.dashboard-tabs .MuiTabs-indicator {
+  height: 3px;
+  border-radius: 3px;
+}
+
+.MuiTab-root {
+  text-transform: none !important;
+  font-weight: 500 !important;
+  transition: all var(--transition-medium) !important;
+  min-height: 48px !important;
+}
+
+.MuiTab-root.Mui-selected {
+  font-weight: 600 !important;
+}
+
+/* ======= MOBILE BOTTOM NAVIGATION ======= */
+.mobile-bottom-nav {
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.9) !important;
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+
+/* ======= TOOLTIPS & POPUPS ======= */
+.custom-tooltip {
+  z-index: 1500;
+  animation: fadeIn var(--transition-medium);
+  pointer-events: none;
+}
+
+.logout-menu-item:hover {
+  background-color: rgba(244, 67, 54, 0.08) !important;
+}
+
+/* ======= CHART COMPONENTS ======= */
+.recharts-wrapper {
+  font-family: 'Inter', sans-serif !important;
+}
+
+.recharts-tooltip-wrapper .recharts-default-tooltip {
+  border-radius: var(--border-radius-md) !important;
+  box-shadow: var(--shadow-md) !important;
+  border: none !important;
+  padding: 10px 14px !important;
+}
+
+/* Better scrollbars for the dashboard */
+.dashboard-container *::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.dashboard-container *::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.dashboard-container *::-webkit-scrollbar-thumb {
+  background-color: rgba(0, 0, 0, 0.2);
+  border-radius: 20px;
+}
+
+.dark-mode .dashboard-container *::-webkit-scrollbar-thumb {
+  background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* ======= NEW COMPONENT STYLES ======= */
+
+/* Card drag handle */
+.card-drag-handle {
+  cursor: grab;
+  padding: 4px;
+  border-radius: var(--border-radius-sm);
+  transition: all var(--transition-fast);
+}
+
+.card-drag-handle:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+}
+
+.dark-mode .card-drag-handle:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Feature preview section */
+.feature-preview .MuiDialog-paper {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+/* Settings panel */
+.settings-panel {
+  border-radius: var(--border-radius-lg);
+  overflow: hidden;
+}
+
+.settings-group {
+  padding: 1rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+}
+
+.dark-mode .settings-group {
+  border-bottom-color: rgba(255, 255, 255, 0.08);
+}
+
+.settings-group:last-child {
+  border-bottom: none;
 }

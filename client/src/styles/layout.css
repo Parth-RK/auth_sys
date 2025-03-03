@@ -195,265 +195,302 @@
   gap: var(--spacing-md);
 }
 
-/* Make header adjust based on screen size */
-@media (max-width: 1024px) {
-  .header {
-    padding-left: var(--spacing-xl);
-  }
+/* ======= ENHANCED ICON BUTTON STYLES ======= */
+.icon-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--text-secondary);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  transition: all var(--transition-fast);
+  overflow: hidden;
 }
 
-/* ======= MAIN CONTAINER WITH PAGE TRANSITIONS ======= */
-.page-container {
-  flex: 1;
-  width: 100%;
-  max-width: 1400px;
-  margin: 0 auto;
-  padding: var(--spacing-xl) 0;
-  animation: fadeIn 0.3s ease;
+.icon-button::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: currentColor;
+  border-radius: 50%;
+  opacity: 0;
+  transform: scale(0);
+  transition: transform var(--transition-fast), opacity var(--transition-fast);
+}
+
+.icon-button:hover {
+  color: var(--primary-color);
+  transform: translateY(-2px);
+}
+
+.icon-button:hover::before {
+  opacity: 0.1;
+  transform: scale(1);
+}
+
+.icon-button.active {
+  color: var(--primary-color);
+  box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+.icon-button .material-icons {
+  font-size: 22px;
   position: relative;
   z-index: 1;
 }
 
-/* Page content container with card styling */
-.content-card {
-  background-color: var(--background-paper);
-  border-radius: var(--radius-lg);
-  box-shadow: var(--shadow-md);
-  overflow: hidden;
-  transition: var(--transition-normal);
-  position: relative;
-  height: 100%;
-}
-
-.content-card:hover {
-  box-shadow: var(--shadow-lg);
-}
-
-.content-card::before {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 4px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  transform-origin: left;
-  transform: scaleX(0);
-  transition: transform var(--transition-normal);
-}
-
-.content-card:hover::before {
-  transform: scaleX(1);
-}
-
-.content-header {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  padding: var(--spacing-lg);
-  border-bottom: 1px solid var(--divider);
-}
-
-.content-body {
-  padding: var(--spacing-lg);
-}
-
-/* ======= FOOTER STYLES ======= */
-.footer {
-  margin-top: auto;
-  padding: var(--spacing-lg);
-  border-top: 1px solid var(--divider);
-  background-color: rgba(255, 255, 255, 0.7);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: var(--spacing-md);
-  text-align: center;
-  font-size: var(--font-size-sm);
-  color: var(--text-secondary);
-}
-
-.footer-links {
-  display: flex;
-  gap: var(--spacing-lg);
-  flex-wrap: wrap;
-  justify-content: center;
-}
-
-.footer-link {
-  color: var(--text-secondary);
-  text-decoration: none;
-  transition: var(--transition-fast);
-  position: relative;
-}
-
-.footer-link:hover {
-  color: var(--primary-color);
-}
-
-.footer-link::after {
-  content: '';
-  position: absolute;
-  bottom: -3px;
-  left: 0;
-  width: 100%;
-  height: 1px;
-  background-color: var(--primary-color);
-  transform: scaleX(0);
-  transform-origin: right;
+.icon-transition {
   transition: transform var(--transition-fast);
 }
 
-.footer-link:hover::after {
-  transform-origin: left;
-  transform: scaleX(1);
+.icon-button:hover .icon-transition {
+  transform: scale(1.1);
 }
 
-/* ======= SCROLL INDICATOR ======= */
-.scroll-progress {
-  position: fixed;
+.icon-button:active .icon-transition {
+  transform: scale(0.95);
+}
+
+/* ======= NOTIFICATION BADGE ======= */
+.notification-badge {
+  position: absolute;
   top: 0;
-  left: 0;
-  width: 100%;
-  height: 3px;
-  background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
-  transform-origin: left;
-  transform: scaleX(0);
-  z-index: calc(var(--z-appbar) + 1);
+  right: 0;
+  width: 16px;
+  height: 16px;
+  background: linear-gradient(45deg, var(--error), #ff7043);
+  color: white;
+  font-size: 10px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  border: 2px solid var(--background-default);
+  z-index: 2;
+  animation: badge-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
 }
 
-/* ======= RESPONSIVE LAYOUT ADJUSTMENTS ======= */
-/* Mobile layout adjustments */
-@media (max-width: 768px) {
-  .layout-content-wrapper {
-    margin-left: 80px; /* Keep the margin on small screens */
-    width: calc(100% - 80px); /* Keep the width adjusted */
+@keyframes badge-pop {
+  0% {
+    transform: scale(0);
   }
-  
-  .layout-content {
-    padding: var(--spacing-md);
+  80% {
+    transform: scale(1.2);
   }
-  
-  .header {
-    padding: var(--spacing-md);
-  }
-  
-  .header-title {
-    font-size: var(--font-size-md);
-  }
-  
-  .content-header {
-    flex-direction: column;
-    align-items: flex-start;
-    gap: var(--spacing-md);
-  }
-  
-  .page-container {
-    padding: var(--spacing-md) 0;
-  }
-  
-  .footer {
-    padding: var(--spacing-md);
-  }
-}
-
-/* For very small screens, ensure content is still accessible */
-@media (max-width: 480px) {
-  .layout-content {
-    padding: var(--spacing-sm); /* Reduce content padding */
-  }
-  
-  .header-title {
-    font-size: calc(var(--font-size-md) - 0.125rem); /* Even smaller title */
-  }
-}
-
-/* Tablet layout adjustments */
-@media (min-width: 769px) and (max-width: 1024px) {
-  .layout-content {
-    padding: var(--spacing-lg);
-  }
-}
-
-/* Layout adjustments to ensure overlay behavior */
-@media (min-width: 1025px) {
-  .layout-content-wrapper,
-  .header {
-    width: 100% !important; /* Ensure full width */
-    margin-left: 0 !important; /* No margin, sidebar will overlay */
-    padding-left: 73px !important; /* Add space for content not under collapsed sidebar */
-  }
-}
-
-/* Ensure adequate spacing for the sidebar during mobile device orientation changes */
-@media screen and (orientation: landscape) and (max-height: 500px) {
-  .layout-content-wrapper {
-    margin-left: 80px; /* Maintain consistent margin */
-  }
-}
-
-/* ======= ANIMATIONS ======= */
-@keyframes fadeIn {
-  from {
-    opacity: 0;
-    transform: translateY(10px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
-}
-
-@keyframes scaleIn {
-  from {
-    opacity: 0;
-    transform: scale(0.95);
-  }
-  to {
-    opacity: 1;
+  100% {
     transform: scale(1);
   }
 }
 
-@keyframes textGradientShift {
-  0% {
-    background-position: 0% 50%;
+/* ======= DROPDOWN STYLES ======= */
+.dropdown-container {
+  position: relative;
+}
+
+.dropdown-menu {
+  position: absolute;
+  top: calc(100% + 10px);
+  right: 0;
+  min-width: 280px;
+  background: var(--background-paper);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+  z-index: 1800;
+  transform-origin: top right;
+  animation: dropdown-slide-in 0.2s var(--transition-normal) forwards;
+  border: 1px solid var(--divider);
+}
+
+.dark-mode .dropdown-menu {
+  border-color: rgba(255, 255, 255, 0.1);
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.5);
+}
+
+@keyframes dropdown-slide-in {
+  from {
+    opacity: 0;
+    transform: translateY(-10px) scale(0.95);
   }
-  50% {
-    background-position: 100% 50%;
-  }
-  100% {
-    background-position: 0% 50%;
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
   }
 }
 
-/* Page transition animations */
-.page-enter {
-  opacity: 0;
-  transform: translateY(10px);
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--divider);
 }
 
-.page-enter-active {
-  opacity: 1;
-  transform: translateY(0);
-  transition: opacity 300ms, transform 300ms;
+.dropdown-header h3 {
+  margin: 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
 }
 
-.page-exit {
-  opacity: 1;
-  transform: translateY(0);
+.dropdown-divider {
+  height: 1px;
+  background-color: var(--divider);
+  margin: 0;
 }
 
-.page-exit-active {
-  opacity: 0;
-  transform: translateY(10px);
-  transition: opacity 300ms, transform 300ms;
+.dropdown-items {
+  padding: var(--spacing-xs);
 }
 
-/* ======= LOADING INDICATOR ======= */
-.loading-container {
+.dropdown-item {
+  display: flex;
+  align-items: center;
+  padding: var(--spacing-sm) var(--spacing-md);
+  color: var(--text-primary);
+  text-decoration: none;
+  border-radius: var(--radius-sm);
+  transition: background-color var(--transition-fast);
+  cursor: pointer;
+  gap: var(--spacing-sm);
+  margin: 2px 0;
+  border: none;
+  width: 100%;
+  background: transparent;
+  text-align: left;
+  font: inherit;
+}
+
+.dropdown-item:hover {
+  background-color: rgba(0, 0, 0, 0.04);
+  color: var(--primary-color);
+}
+
+.dark-mode .dropdown-item:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.dropdown-item .material-icons {
+  font-size: var(--font-size-xl);
+  color: var(--text-secondary);
+}
+
+.dropdown-item:hover .material-icons {
+  color: var(--primary-color);
+}
+
+.logout-item {
+  color: var(--error);
+  margin-top: var(--spacing-sm);
+}
+
+.logout-item .material-icons {
+  color: var(--error);
+}
+
+.logout-item:hover {
+  background-color: rgba(244, 67, 54, 0.08);
+  color: var(--error);
+}
+
+.logout-item:hover .material-icons {
+  color: var(--error);
+}
+
+/* ======= PROFILE MENU SPECIFIC STYLES ======= */
+.profile-header {
+  display: flex;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--divider);
+  background: linear-gradient(45deg, rgba(var(--primary-rgb), 0.05), rgba(var(--secondary-rgb), 0.05));
+}
+
+.profile-avatar {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, var(--primary-color), var(--secondary-color));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.profile-avatar .material-icons {
+  font-size: 30px;
+}
+
+.profile-info {
+  overflow: hidden;
+}
+
+.profile-info h3 {
+  margin: 0 0 5px 0;
+  font-size: var(--font-size-md);
+  font-weight: 600;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.profile-info p {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-secondary);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* ======= NOTIFICATION SPECIFIC STYLES ======= */
+.notification-menu {
+  width: 320px;
+  max-width: 90vw;
+}
+
+.notification-list {
+  max-height: 360px;
+  overflow-y: auto;
+}
+
+.notification-item {
+  display: flex;
+  padding: var(--spacing-md);
+  border-bottom: 1px solid var(--divider);
+  transition: background-color var(--transition-fast);
+  cursor: pointer;
+}
+
+.notification-item:hover {
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.dark-mode .notification-item:hover {
+  background-color: rgba(255, 255, 255, 0.02);
+}
+
+.notification-item:last-child {
+  border-bottom: none;
+}
+
+.notification-icon {
+  margin-right: var(--spacing-md);
+  background-color: rgba(var(--primary-rgb), 0.1);
+  color: var(--primary-color);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
   position: fixed;
   top: 0;
   left: 0;
@@ -588,6 +625,53 @@
   }
 }
 
+/* ======= FOOTER STYLES ======= */
+.footer {
+  padding: var(--spacing-md) var(--spacing-xl);
+  border-top: 1px solid var(--divider);
+  margin-top: auto;
+  font-size: var(--font-size-xs);
+  color: var(--text-secondary);
+  background-color: var(--background-paper);
+  text-align: center;
+}
+
+.footer-links {
+  display: flex;
+  justify-content: center;
+  gap: var(--spacing-lg);
+  margin-bottom: var(--spacing-sm);
+  flex-wrap: wrap;
+}
+
+.footer-link {
+  color: var(--text-secondary);
+  text-decoration: none;
+  transition: color var(--transition-fast);
+}
+
+.footer-link:hover {
+  color: var(--primary-light);
+  text-decoration: none;
+}
+
+/* Dark mode adjustments for footer */
+.dark-mode .footer {
+  background-color: var(--background-paper);
+  border-color: rgba(255, 255, 255, 0.05);
+}
+
+/* Responsive footer adjustments */
+@media (max-width: 600px) {
+  .footer {
+    padding: var(--spacing-sm);
+  }
+  
+  .footer-links {
+    gap: var(--spacing-md);
+  }
+}
+
 /* ======= UTILITY CLASSES ======= */
 .text-gradient {
   background: linear-gradient(90deg, var(--primary-color), var(--secondary-color));
@@ -635,4 +719,285 @@ button {
 /* Additional overlay styling */
 .sidebar.sidebar-expanded {
   box-shadow: 0 0 30px rgba(0, 0, 0, 0.2) !important; /* Stronger shadow when expanded */
+}
+
+/* Fix material icons display issues */
+.material-icons {
+  font-family: 'Material Icons';
+  font-weight: normal;
+  font-style: normal;
+  font-size: 24px; /* Preferred icon size */
+  display: inline-block;
+  line-height: 1;
+  text-transform: none;
+  letter-spacing: normal;
+  word-wrap: normal;
+  white-space: nowrap;
+  direction: ltr;
+  
+  /* Support for all WebKit browsers. */
+  -webkit-font-smoothing: antialiased;
+  
+  /* Support for Safari and Chrome. */
+  text-rendering: optimizeLegibility;
+  
+  /* Support for Firefox. */
+  -moz-osx-font-smoothing: grayscale;
+  
+  /* Support for IE. */
+  font-feature-settings: 'liga';
+}
+
+/* Fix notification icon container display issue */
+.notification-icon-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.notification-icon-container .notification-icon {
+  position: relative;
+  width: auto;
+  height: auto;
+  background: transparent;
+  display: inline-block;
+}
+
+/* Fix notification icon styling */
+.notification-icon {
+  font-size: 20px;
+  display: inline-block;
+  position: static;
+  width: auto;
+  height: auto;
+  background: transparent;
+}
+
+/* Ensure profile avatar icons are visible */
+.profile-avatar .material-icons {
+  font-size: 30px;
+  line-height: 1;
+}
+
+/* Fix icon-transition display */
+.icon-transition {
+  display: inline-block;
+  transition: transform var(--transition-fast);
+}
+
+/* Add to your layout.css file */
+
+/* Enhanced notification styles */
+.notification-icon-container {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
+}
+
+.notification-icon {
+  font-size: 20px;
+}
+
+.notification-time {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  margin-top: 4px;
+}
+
+.notification-time-icon {
+  font-size: 12px !important;
+  margin-right: 4px;
+}
+
+.notification-item.read {
+  opacity: 0.7;
+  background-color: rgba(0, 0, 0, 0.02);
+}
+
+.unread-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  margin-left: auto;
+  flex-shrink: 0;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 48px !important;
+  opacity: 0.5;
+  margin-bottom: var(--spacing-md);
+}
+
+/* Enhanced dropdown header */
+.dropdown-header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.dropdown-header-title .material-icons {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+/* Text button for "Clear all" */
+.text-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--spacing-xs) var(--spacing-sm);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: var(--transition-fast);
+}
+
+.text-button:hover {
+  background-color: rgba(var(--primary-rgb), 0.08);
+}
+
+.text-button .material-icons {
+  font-size: 16px;
+}
+
+/* Dropdown footer */
+.dropdown-footer {
+  border-top: 1px solid var(--divider);
+  padding: var(--spacing-sm) var(--spacing-md);
+  text-align: center;
+}
+
+.view-all-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  transition: var(--transition-fast);
+}
+
+.view-all-link:hover {
+  text-decoration: underline;
+}
+
+.view-all-link .material-icons {
+  font-size: 16px;
+}
+
+/* User role badge */
+.user-role {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 11px;
+  color: var(--text-secondary);
+  background-color: rgba(var(--primary-rgb), 0.08);
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+.role-icon {
+  font-size: 12px !important;
+}
+
+/* Custom scrollbar for notification list */
+.custom-scrollbar {
+  max-height: 360px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-light) transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: var(--primary-light);
+  border-radius: 10px;
+}
+
+.avatar-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 50%;
+}
+
+/* Add these styles for simple icons */
+
+.simple-icon {
+  font-size: 22px;
+  line-height: 1;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  z-index: 1;
+}
+
+.header-logo .simple-icon {
+  font-size: 24px;
+}
+
+.profile-avatar .simple-icon {
+  font-size: 28px;
+}
+
+.notification-icon-container .simple-icon {
+  font-size: 18px;
+}
+
+.dropdown-header-title .simple-icon {
+  font-size: 20px;
+  color: var(--primary-color);
+}
+
+.notification-time-icon.simple-icon {
+  font-size: 12px !important;
+  margin-right: 4px;
+}
+
+.role-icon.simple-icon {
+  font-size: 12px !important;
+}
+
+.empty-icon.simple-icon {
+  font-size: 40px;
+  opacity: 0.5;
+  margin-bottom: var(--spacing-md);
 }
