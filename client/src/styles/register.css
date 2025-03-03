@@ -1,0 +1,430 @@
+@import './colors.css';
+
+/* This file extends the login.css styles with register-specific elements */
+
+/* Password strength indicator */
+.password-strength {
+  margin-top: 8px;
+  margin-bottom: 16px;
+}
+
+.strength-meter {
+  height: 4px;
+  border-radius: 2px;
+  background: var(--neutral-200);
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.strength-meter-fill {
+  height: 100%;
+  border-radius: 2px;
+  transition: width 0.3s ease, background-color 0.3s ease;
+}
+
+.strength-text {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+/* Weak */
+.strength-weak .strength-meter-fill {
+  width: 25%;
+  background-color: var(--error);
+}
+
+/* Medium */
+.strength-medium .strength-meter-fill {
+  width: 50%;
+  background-color: var(--warning);
+}
+
+/* Strong */
+.strength-strong .strength-meter-fill {
+  width: 75%;
+  background-color: var(--info);
+}
+
+/* Very Strong */
+.strength-very-strong .strength-meter-fill {
+  width: 100%;
+  background-color: var(--success);
+}
+
+/* Password rules list */
+.password-rules {
+  margin-bottom: 16px;
+}
+
+.rule-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.rule-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+  margin-right: 8px;
+}
+
+.rule-icon.valid {
+  color: var(--success);
+}
+
+.rule-icon.invalid {
+  color: var(--neutral-400);
+}
+
+.rule-text {
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.rule-text.valid {
+  color: var(--success);
+}
+
+/* Page transitions */
+.page-transition-container {
+  position: relative;
+  width: 100%;
+  height: 100vh;
+}
+
+.page-transition-enter {
+  opacity: 0;
+  transform: scale(0.9);
+}
+
+.page-transition-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 300ms, transform 300ms;
+}
+
+.page-transition-exit {
+  opacity: 1;
+  transform: scale(1);
+}
+
+.page-transition-exit-active {
+  opacity: 0;
+  transform: scale(0.9);
+  transition: opacity 300ms, transform 300ms;
+}
+
+/* Animation for fade-in elements */
+.fade-in {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: opacity 0.5s ease-out, transform 0.5s ease-out;
+}
+
+.fade-in.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Extra features for register page */
+.landing-left.register {
+  background: var(--gradient-pink);
+  clip-path: polygon(10% 0, 100% 0, 100% 100%, 0 100%);
+  order: 2;
+  display: flex;
+  align-items: center;
+  padding: 60px 40px 60px 80px; /* Additional padding for sloped edge */
+  transition: transform 800ms ease-in-out, background 800ms ease-in-out;
+  z-index: 10;
+}
+
+.landing-left.register .landing-left-content {
+  max-width: 500px;
+  position: relative;
+  z-index: 2;
+  margin-left: 50px; /* Move content right to avoid being cut by the slope */
+  opacity: 0;
+  animation: fadeContentIn 400ms 400ms forwards; /* Delay to wait for card slide */
+}
+
+@keyframes fadeContentIn {
+  from { opacity: 0; transform: translateX(20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Specific animation for the form */
+.register .login-container {
+  opacity: 0;
+  animation: fadeFormIn 400ms 400ms forwards; /* Delay to wait for card slide */
+}
+
+@keyframes fadeFormIn {
+  from { opacity: 0; transform: translateX(-20px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+/* Register page specific transitions */
+.register-enter {
+  transform: translateX(100%);
+}
+
+.register-enter-active {
+  transform: translateX(0);
+  transition: transform 800ms ease-in-out;
+}
+
+.register-exit {
+  transform: translateX(0);
+}
+
+.register-exit-active {
+  transform: translateX(-100%);
+  transition: transform 800ms ease-in-out;
+}
+
+.landing-left.register .landing-tagline,
+.landing-left.register .landing-subtitle,
+.landing-left.register .feature-list,
+.landing-left.register .testimonials {
+  margin-left: 10%; /* Shift content further right to avoid clip-path */
+}
+
+.register-steps {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 24px;
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 0 8px;
+}
+
+.step-number {
+  width: 24px;
+  height: 24px;
+  border-radius: 50%;
+  background: var(--neutral-200);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--neutral-600);
+  margin-bottom: 4px;
+}
+
+.step-number.active {
+  background: var(--primary-main);
+  color: white;
+}
+
+.step-number.completed {
+  background: var(--success);
+  color: white;
+}
+
+.step-label {
+  font-size: 12px;
+  color: var(--neutral-600);
+}
+
+.step-label.active {
+  color: var(--primary-main);
+  font-weight: 600;
+}
+
+.step-label.completed {
+  color: var(--success);
+}
+
+.step-connector {
+  height: 2px;
+  flex-grow: 1;
+  background: var(--neutral-200);
+  align-self: center;
+  margin: 0 4px;
+}
+
+.step-connector.active {
+  background: var(--primary-main);
+}
+
+.step-connector.completed {
+  background: var(--success);
+}
+
+/* Enhanced toggle animation between pages */
+@keyframes slideLeft {
+  from { transform: translateX(100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideRight {
+  from { transform: translateX(-100%); opacity: 0; }
+  to { transform: translateX(0); opacity: 1; }
+}
+
+@keyframes slideOutLeft {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(-100%); opacity: 0; }
+}
+
+@keyframes slideOutRight {
+  from { transform: translateX(0); opacity: 1; }
+  to { transform: translateX(100%); opacity: 0; }
+}
+
+/* Update slide animations to include both in and out states */
+.slide-in-right {
+  animation: slideRight 0.5s forwards;
+}
+
+.slide-in-left {
+  animation: slideOutLeft 0.5s forwards;
+}
+
+/* Add new animations for sliding out */
+.slide-out-left {
+  animation: slideOutLeft 0.5s forwards;
+}
+
+.slide-out-right {
+  animation: slideOutRight 0.5s forwards;
+}
+
+/* For register page, rearrange the flex container */
+.landing-container.register-container {
+  flex-direction: row-reverse;
+}
+
+.landing-container.slide-in-right {
+  flex-direction: row; /* Keep default direction, content positioning is handled by order property */
+}
+
+/* Order override for mobile */
+@media (max-width: 1024px) {
+  .landing-container.register-container {
+    flex-direction: column;
+  }
+  
+  .landing-left.register {
+    order: 1;
+    clip-path: none;
+    padding: 40px 20px;
+  }
+  
+  .landing-left.register .landing-left-content {
+    margin-left: 0;
+  }
+  
+  .landing-left.register .landing-tagline,
+  .landing-left.register .landing-subtitle,
+  .landing-left.register .feature-list,
+  .landing-left.register .testimonials {
+    margin-left: 0; /* Reset margin for mobile */
+  }
+}
+
+.landing-left {
+    flex: 1;
+    background: var(--gradient-blue);
+    padding: 40px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    color: white;
+    position: relative;
+    overflow: hidden;
+    min-height: 100vh;
+    box-shadow: 5px 0 25px rgba(0, 0, 0, 0.1);
+    clip-path: polygon(0 0, 100% 0, 90% 100%, 0% 100%);
+  }
+  
+  .landing-left-content {
+    max-width: 600px;
+    position: relative;
+    z-index: 2;
+  }
+  
+  .brand {
+    display: flex;
+    align-items: center;
+    margin-bottom: 80px;
+  }
+  
+  .brand-logo {
+    width: 50px;
+    height: 50px;
+    margin-right: 16px;
+  }
+  
+  .brand-name {
+    font-size: 28px;
+    font-weight: 700;
+  }
+  
+  .landing-tagline {
+    font-size: 48px;
+    font-weight: bold;
+    margin-bottom: 24px;
+    line-height: 1.2;
+  }
+  
+  .landing-subtitle {
+    font-size: 18px;
+    margin-bottom: 40px;
+    line-height: 1.6;
+    font-weight: 300;
+    max-width: 500px;
+  }
+  
+  .feature-list {
+    list-style: none;
+    padding: 0;
+    margin: 40px 0;
+  }
+  
+  .feature-item {
+    display: flex;
+    align-items: center;
+    margin-bottom: 16px;
+  }
+  
+  .feature-icon {
+    margin-right: 16px;
+    font-size: 20px;
+  }
+  
+  .testimonials {
+    margin-top: 60px;
+    padding: 20px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  
+  .testimonial-text {
+    font-style: italic;
+    margin-bottom: 16px;
+  }
+  
+  .testimonial-author {
+    font-weight: 600;
+  }
+  
+  /* Right side with login form */
+  .landing-right {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+    padding: 40px;
+  }

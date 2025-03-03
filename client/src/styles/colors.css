@@ -37,6 +37,55 @@
   --dark-text-primary: #f5f5f5;
   --dark-text-secondary: #b0b0b0;
   --dark-divider: rgba(255, 255, 255, 0.08);
+  
+  /* Primary colors */
+  --primary-main: #3a86ff;
+  --primary-light: #61a5ff;
+  --primary-dark: #2667cc;
+  
+  /* Secondary colors */
+  --secondary-main: #ff006e;
+  --secondary-light: #ff4b93;
+  --secondary-dark: #c1004f;
+  
+  /* Accent colors */
+  --accent-1: #8338ec;
+  --accent-2: #ffbe0b;
+  --accent-3: #fb5607;
+  
+  /* Neutral colors */
+  --neutral-900: #111827;
+  --neutral-800: #1f2937;
+  --neutral-700: #374151;
+  --neutral-600: #4b5563;
+  --neutral-500: #6b7280;
+  --neutral-400: #9ca3af;
+  --neutral-300: #d1d5db;
+  --neutral-200: #e5e7eb;
+  --neutral-100: #f3f4f6;
+  --neutral-50: #f9fafb;
+  
+  /* Success, error, warning, info */
+  --success: #10b981;
+  --error: #ef4444;
+  --warning: #f59e0b;
+  --info: #3b82f6;
+  
+  /* Gradient colors */
+  --gradient-blue: linear-gradient(135deg, #3a86ff 0%, #8338ec 100%);
+  --gradient-pink: linear-gradient(135deg, #ff006e 0%, #fb5607 100%);
+  --gradient-gold: linear-gradient(135deg, #ffbe0b 0%, #fb5607 100%);
+  
+  /* Text colors */
+  --text-primary: var(--neutral-900);
+  --text-secondary: var(--neutral-700);
+  --text-disabled: var(--neutral-500);
+  --text-light: var(--neutral-100);
+  
+  /* Background colors */
+  --bg-main: #ffffff;
+  --bg-paper: var(--neutral-50);
+  --bg-dark: var(--neutral-900);
 }
 
 /* Utility classes for gradients */
