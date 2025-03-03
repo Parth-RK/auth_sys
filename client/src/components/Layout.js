@@ -211,7 +211,7 @@ const Layout = ({ children }) => {
                   <Notifications fontSize="small" />
                 </span>
                 {notificationCount > 0 && (
-                  <span className="notification-badge">{notificationCount}</span>
+                  <span className="notification-badge"></span>
                 )}
               </button>
               

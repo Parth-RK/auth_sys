@@ -264,30 +264,27 @@
   position: absolute;
   top: 0;
   right: 0;
-  width: 16px;
-  height: 16px;
-  background: linear-gradient(45deg, var(--error), #ff7043);
-  color: white;
-  font-size: 10px;
-  font-weight: 600;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  width: 10px;
+  height: 10px;
+  background: var(--error);
   border-radius: 50%;
   border: 2px solid var(--background-default);
   z-index: 2;
-  animation: badge-pop 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+  animation: pulse 1.5s infinite;
 }
 
-@keyframes badge-pop {
+@keyframes pulse {
   0% {
-    transform: scale(0);
+    transform: scale(0.8);
+    opacity: 0.8;
   }
-  80% {
+  50% {
     transform: scale(1.2);
+    opacity: 1;
   }
   100% {
-    transform: scale(1);
+    transform: scale(0.8);
+    opacity: 0.8;
   }
 }
 
@@ -307,7 +304,7 @@
   overflow: hidden;
   z-index: 1800;
   transform-origin: top right;
-  animation: dropdown-slide-in 0.2s var(--transition-normal) forwards;
+  animation: dropdown-slide-in 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
   border: 1px solid var(--divider);
 }
 
@@ -331,14 +328,15 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: var(--spacing-md);
+  padding: var(--spacing-sm) var(--spacing-md);
   border-bottom: 1px solid var(--divider);
 }
 
 .dropdown-header h3 {
   margin: 0;
   font-size: var(--font-size-md);
-  font-weight: 600;
+  font-weight: 500;
+  letter-spacing: 0.1px;
 }
 
 .dropdown-divider {
@@ -453,58 +451,187 @@
 }
 
 /* ======= NOTIFICATION SPECIFIC STYLES ======= */
+/* Updated minimal Material UI style for notification menu */
 .notification-menu {
   width: 320px;
   max-width: 90vw;
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-lg);
 }
 
 .notification-list {
   max-height: 360px;
   overflow-y: auto;
+  padding: var(--spacing-xs) 0;
 }
 
 .notification-item {
   display: flex;
-  padding: var(--spacing-md);
-  border-bottom: 1px solid var(--divider);
-  transition: background-color var(--transition-fast);
+  align-items: flex-start;
+  padding: var(--spacing-sm) var(--spacing-md);
+  transition: background-color var(--transition-fastest);
   cursor: pointer;
+  border-left: 3px solid transparent;
 }
 
 .notification-item:hover {
-  background-color: rgba(0, 0, 0, 0.02);
+  background-color: rgba(0, 0, 0, 0.03);
+}
+
+.notification-item.read {
+  opacity: 0.7;
 }
 
 .dark-mode .notification-item:hover {
-  background-color: rgba(255, 255, 255, 0.02);
+  background-color: rgba(255, 255, 255, 0.06);
 }
 
-.notification-item:last-child {
-  border-bottom: none;
+.notification-item:not(.read) {
+  border-left-color: var(--primary-color);
 }
 
-.notification-icon {
-  margin-right: var(--spacing-md);
-  background-color: rgba(var(--primary-rgb), 0.1);
-  color: var(--primary-color);
-  width: 40px;
-  height: 40px;
+.notification-icon-container {
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
-  display: flex;
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(5px);
-  z-index: var(--z-modal);
-  animation: fadeIn 0.3s ease;
+  margin-right: var(--spacing-md);
+  flex-shrink: 0;
 }
 
+.notification-icon {
+  font-size: 18px;
+  position: static;
+  display: inline-block;
+}
+
+.notification-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.notification-content p {
+  margin: 0 0 4px 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-primary);
+  white-space: normal;
+  line-height: 1.4;
+}
+
+.notification-time {
+  display: flex;
+  align-items: center;
+  color: var(--text-secondary);
+  font-size: var(--font-size-xs);
+  margin-top: 4px;
+}
+
+.notification-time-icon {
+  font-size: 12px !important;
+  margin-right: 4px;
+  opacity: 0.7;
+}
+
+/* Minimal unread indicator */
+.unread-indicator {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background-color: var(--primary-color);
+  margin-left: var(--spacing-sm);
+  margin-top: 8px;
+  flex-shrink: 0;
+}
+
+/* Enhanced dropdown header */
+.dropdown-header-title {
+  display: flex;
+  align-items: center;
+  gap: var(--spacing-xs);
+}
+
+.dropdown-header-title .material-icons {
+  font-size: 18px;
+  color: var(--primary-color);
+}
+
+/* Text button for "Mark all as read" */
+.text-button {
+  background: none;
+  border: none;
+  color: var(--primary-color);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  cursor: pointer;
+  padding: var(--spacing-xs);
+  border-radius: var(--radius-sm);
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  transition: background-color var(--transition-fastest);
+}
+
+.text-button:hover {
+  background-color: rgba(var(--primary-rgb), 0.04);
+}
+
+.text-button .material-icons {
+  font-size: 14px;
+}
+
+/* Empty state */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--spacing-xl) var(--spacing-md);
+  color: var(--text-secondary);
+}
+
+.empty-icon {
+  font-size: 36px !important;
+  opacity: 0.4;
+  margin-bottom: var(--spacing-sm);
+  color: var(--text-secondary);
+}
+
+.empty-state p {
+  font-size: var(--font-size-sm);
+  margin: 0;
+}
+
+/* Dropdown footer */
+.dropdown-footer {
+  border-top: 1px solid var(--divider);
+  padding: var(--spacing-xs) var(--spacing-md);
+  text-align: center;
+}
+
+.view-all-link {
+  color: var(--primary-color);
+  text-decoration: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--spacing-xs);
+  font-size: var(--font-size-xs);
+  font-weight: 500;
+  transition: color var(--transition-fastest);
+  padding: var(--spacing-xs) 0;
+}
+
+.view-all-link:hover {
+  color: var(--primary-dark);
+}
+
+.view-all-link .material-icons {
+  font-size: 14px;
+}
+
+/* Loading spinner */
 .loading-spinner {
   width: 50px;
   height: 50px;
@@ -593,38 +720,6 @@
   background-color: rgba(30, 30, 30, 0.7);
 }
 
-/* Pulse animation for notifications */
-.notification-badge {
-  position: relative;
-}
-
-.notification-badge::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  right: 0;
-  width: 10px;
-  height: 10px;
-  background-color: var(--error);
-  border-radius: 50%;
-  animation: pulse 1.5s infinite;
-}
-
-@keyframes pulse {
-  0% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-  50% {
-    transform: scale(1.2);
-    opacity: 1;
-  }
-  100% {
-    transform: scale(0.8);
-    opacity: 0.8;
-  }
-}
-
 /* ======= FOOTER STYLES ======= */
 .footer {
   padding: var(--spacing-md) var(--spacing-xl);
@@ -699,13 +794,6 @@
   width: 100%;
 }
 
-/* Check and remove any button styles that might conflict with our sidebar toggle */
-button {
-  /* Reset default button styles in case there's a global style affecting our toggle */
-  appearance: none;
-  -webkit-appearance: none;
-}
-
 /* Add a more specific reset that won't affect layout.css but will help our toggle */
 .sidebar button.sidebar-toggle {
   appearance: none;
@@ -748,36 +836,6 @@ button {
   font-feature-settings: 'liga';
 }
 
-/* Fix notification icon container display issue */
-.notification-icon-container {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: var(--spacing-md);
-  flex-shrink: 0;
-}
-
-.notification-icon-container .notification-icon {
-  position: relative;
-  width: auto;
-  height: auto;
-  background: transparent;
-  display: inline-block;
-}
-
-/* Fix notification icon styling */
-.notification-icon {
-  font-size: 20px;
-  display: inline-block;
-  position: static;
-  width: auto;
-  height: auto;
-  background: transparent;
-}
-
 /* Ensure profile avatar icons are visible */
 .profile-avatar .material-icons {
   font-size: 30px;
@@ -788,129 +846,6 @@ button {
 .icon-transition {
   display: inline-block;
   transition: transform var(--transition-fast);
-}
-
-/* Add to your layout.css file */
-
-/* Enhanced notification styles */
-.notification-icon-container {
-  width: 40px;
-  height: 40px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  margin-right: var(--spacing-md);
-  flex-shrink: 0;
-}
-
-.notification-icon {
-  font-size: 20px;
-}
-
-.notification-time {
-  display: flex;
-  align-items: center;
-  color: var(--text-secondary);
-  font-size: var(--font-size-xs);
-  margin-top: 4px;
-}
-
-.notification-time-icon {
-  font-size: 12px !important;
-  margin-right: 4px;
-}
-
-.notification-item.read {
-  opacity: 0.7;
-  background-color: rgba(0, 0, 0, 0.02);
-}
-
-.unread-indicator {
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: var(--primary-color);
-  margin-left: auto;
-  flex-shrink: 0;
-}
-
-.empty-state {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  padding: var(--spacing-xl) var(--spacing-md);
-  color: var(--text-secondary);
-}
-
-.empty-icon {
-  font-size: 48px !important;
-  opacity: 0.5;
-  margin-bottom: var(--spacing-md);
-}
-
-/* Enhanced dropdown header */
-.dropdown-header-title {
-  display: flex;
-  align-items: center;
-  gap: var(--spacing-xs);
-}
-
-.dropdown-header-title .material-icons {
-  font-size: 20px;
-  color: var(--primary-color);
-}
-
-/* Text button for "Clear all" */
-.text-button {
-  background: none;
-  border: none;
-  color: var(--primary-color);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  cursor: pointer;
-  padding: var(--spacing-xs) var(--spacing-sm);
-  border-radius: var(--radius-sm);
-  display: flex;
-  align-items: center;
-  gap: 4px;
-  transition: var(--transition-fast);
-}
-
-.text-button:hover {
-  background-color: rgba(var(--primary-rgb), 0.08);
-}
-
-.text-button .material-icons {
-  font-size: 16px;
-}
-
-/* Dropdown footer */
-.dropdown-footer {
-  border-top: 1px solid var(--divider);
-  padding: var(--spacing-sm) var(--spacing-md);
-  text-align: center;
-}
-
-.view-all-link {
-  color: var(--primary-color);
-  text-decoration: none;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--spacing-xs);
-  font-size: var(--font-size-sm);
-  font-weight: 500;
-  transition: var(--transition-fast);
-}
-
-.view-all-link:hover {
-  text-decoration: underline;
-}
-
-.view-all-link .material-icons {
-  font-size: 16px;
 }
 
 /* User role badge */
@@ -956,48 +891,4 @@ button {
   height: 100%;
   object-fit: cover;
   border-radius: 50%;
-}
-
-/* Add these styles for simple icons */
-
-.simple-icon {
-  font-size: 22px;
-  line-height: 1;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  position: relative;
-  z-index: 1;
-}
-
-.header-logo .simple-icon {
-  font-size: 24px;
-}
-
-.profile-avatar .simple-icon {
-  font-size: 28px;
-}
-
-.notification-icon-container .simple-icon {
-  font-size: 18px;
-}
-
-.dropdown-header-title .simple-icon {
-  font-size: 20px;
-  color: var(--primary-color);
-}
-
-.notification-time-icon.simple-icon {
-  font-size: 12px !important;
-  margin-right: 4px;
-}
-
-.role-icon.simple-icon {
-  font-size: 12px !important;
-}
-
-.empty-icon.simple-icon {
-  font-size: 40px;
-  opacity: 0.5;
-  margin-bottom: var(--spacing-md);
 }
