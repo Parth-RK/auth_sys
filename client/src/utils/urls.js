@@ -1,7 +1,8 @@
 // URL Configuration for the entire application
 
 // Make sure the baseURL is correct and has no trailing slash
-const baseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+// const baseUrl = process.env.REACT_APP_BACKEND_URL || 'http://localhost:5000';
+const baseUrl = 'https://auth-sys-backend.onrender.com';
 
 // Debug URL configuration
 console.log('Environment variable REACT_APP_BACKEND_URL:', process.env.REACT_APP_BACKEND_URL);
