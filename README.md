@@ -39,7 +39,7 @@ create .env file in the client directory and add the following line
 ```
 # REACT_APP_BACKEND_URL=http://localhost:5000 #for local
 
-REACT_APP_BACKEND_URL=https://auth-sys-backend.onrender.com
+REACT_APP_BACKEND_URL=https://example.com
 ```
 
 ```bash
