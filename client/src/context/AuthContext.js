@@ -1,9 +1,9 @@
 // client/src/context/AuthContext.js
 import React, { createContext, useState, useContext, useEffect } from 'react';
 import axios from 'axios';
+import { URLS } from '../utils/urls';
 
-// Fix baseURL to properly handle API paths - remove the trailing /api since we add it in the routes
-axios.defaults.baseURL = process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com';
+axios.defaults.baseURL = URLS.API.BASE;
 
 // Log the actual baseURL being used for debugging
 console.log('AuthContext using baseURL:', axios.defaults.baseURL);

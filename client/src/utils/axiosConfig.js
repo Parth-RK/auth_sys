@@ -1,12 +1,13 @@
 // client/src/utils/axiosConfig.js
 import axios from 'axios';
+import { URLS } from './urls';
 
 // Add a constant to ensure consistency
 const API_PREFIX = '/api';
 
 const instance = axios.create({
-  // Fix baseURL to match AuthContext.js and avoid path duplication
-  baseURL: process.env.REACT_APP_API_URL || 'https://auth-sys-backend.onrender.com',
+  // Use the centralized URL configuration
+  baseURL: URLS.API.BASE,
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json'

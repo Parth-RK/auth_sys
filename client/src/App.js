@@ -11,6 +11,7 @@ import Appearance from './components/Appearance';
 import { CssBaseline, ThemeProvider, createTheme } from '@mui/material';
 import Layout from './components/Layout';
 import './styles/App.css';
+import { URLS } from './utils/urls';
 
 const theme = createTheme({
   palette: {
@@ -30,12 +31,12 @@ function App() {
       <AuthProvider>
         <Router>
           <Routes>
-            <Route path="/login" element={<Login />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/" element={<Login />} />
+            <Route path={URLS.LOGIN} element={<Login />} />
+            <Route path={URLS.REGISTER} element={<Register />} />
+            <Route path={URLS.HOME} element={<Login />} />
             
             {/* Protected Routes with Layout */}
-            <Route path="/dashboard" element={
+            <Route path={URLS.DASHBOARD} element={
               <ProtectedRoute>
                 <Layout>
                   <Dashboard />
@@ -43,7 +44,7 @@ function App() {
               </ProtectedRoute>
             } />
             
-            <Route path="/privileges" element={
+            <Route path={URLS.PRIVILEGES} element={
               <ProtectedRoute allowedRoles={['admin', 'superadmin']}>
                 <Layout>
                   <PrivilegeControl />
@@ -52,7 +53,7 @@ function App() {
             } />
             
             {/* Remove allowedRoles from users route to allow all authenticated users */}
-            <Route path="/users" element={
+            <Route path={URLS.USERS} element={
               <ProtectedRoute>
                 <Layout>
                   <UserManagement />
@@ -60,7 +61,7 @@ function App() {
               </ProtectedRoute>
             } />
 
-            <Route path="/appearance" element={
+            <Route path={URLS.APPEARANCE} element={
               <ProtectedRoute>
                 <Layout>
                   <Appearance />
