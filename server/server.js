@@ -8,6 +8,7 @@ import { authenticateToken, authorize, rateLimiter } from './middleware/auth.js'
 import errorHandler from './middleware/errorHandler.js';
 import authRoutes from './routes/auth.js';
 import userRoutes from './routes/users.js';
+import { SERVER_URLS } from './utils/urls.js';
 
 // Debug utility function
 const debugLog = (section, message, data = null) => {
@@ -24,6 +25,7 @@ const logEnv = () => {
   debugLog('ENV', `PORT: ${process.env.PORT || 5000}`);
   debugLog('ENV', `JWT_SECRET: ${process.env.JWT_SECRET ? '[SET]' : '[NOT SET]'}`);
   debugLog('ENV', `MONGODB_URI: ${process.env.MONGODB_URI ? '[SET]' : '[NOT SET]'}`);
+  debugLog('ENV', `FRONTEND_URLS: ${process.env.FRONTEND_URL || '[NOT SET]'}`);
 };
 
 dotenv.config();
@@ -35,17 +37,14 @@ const app = express();
 // Middleware
 debugLog('SERVER', 'Setting up middleware');
 app.use(cors({
-  origin: [
-    'https://auth-sys-frontend.onrender.com', // Add your specific frontend URL
-    'http://localhost:3000' // For local development
-  ],
+  origin: SERVER_URLS.FRONTEND,
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization'],
   credentials: true,
   preflightContinue: false,
   optionsSuccessStatus: 204
 }));
-debugLog('SERVER', 'CORS configured with specific origins');
+debugLog('SERVER', `CORS configured with origins: ${SERVER_URLS.FRONTEND.join(', ')}`);
 
 app.use(helmet());
 debugLog('SERVER', 'Helmet security enabled');
@@ -53,6 +52,7 @@ debugLog('SERVER', 'Helmet security enabled');
 app.use(express.json());
 debugLog('SERVER', 'JSON body parser enabled');
 
+// Request logging middleware
 app.use((req, res, next) => {
   debugLog('REQUEST', `${req.method} ${req.url}`);
   debugLog('REQUEST', 'Headers:', req.headers);
@@ -69,7 +69,7 @@ debugLog('SERVER', 'Rate limiter enabled');
 
 // Add a debugging route for CORS testing
 app.options('*', cors());
-app.get('/api/cors-test', (req, res) => {
+app.get(SERVER_URLS.API.CORS_TEST, (req, res) => {
   debugLog('CORS', 'CORS test endpoint called');
   res.json({ 
     message: 'CORS is configured correctly',
@@ -79,14 +79,16 @@ app.get('/api/cors-test', (req, res) => {
 
 // Routes
 debugLog('SERVER', 'Setting up routes');
-app.use('/api/auth', authRoutes);
-debugLog('SERVER', 'Auth routes registered at /api/auth');
+const authPath = SERVER_URLS.API.AUTH.replace(SERVER_URLS.API.PREFIX, '');
+app.use(SERVER_URLS.API.AUTH, authRoutes);
+debugLog('SERVER', `Auth routes registered at ${SERVER_URLS.API.AUTH}`);
 
-app.use('/api/users', authenticateToken, userRoutes);
-debugLog('SERVER', 'User routes registered at /api/users (protected)');
+const usersPath = SERVER_URLS.API.USERS.replace(SERVER_URLS.API.PREFIX, '');
+app.use(SERVER_URLS.API.USERS, authenticateToken, userRoutes);
+debugLog('SERVER', `User routes registered at ${SERVER_URLS.API.USERS} (protected)`);
 
 // Health check route
-app.get('/api/health', (req, res) => {
+app.get(SERVER_URLS.API.HEALTH, (req, res) => {
   debugLog('HEALTH', 'Health check endpoint called');
   res.json({ status: 'ok', message: 'API is running' });
 });
@@ -112,6 +114,6 @@ mongoose.connect(process.env.MONGODB_URI, {
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   debugLog('SERVER', `Server running on port ${PORT}`);
-  debugLog('SERVER', `API available at http://localhost:${PORT}/api`);
+  debugLog('SERVER', `API available at http://localhost:${PORT}${SERVER_URLS.API.PREFIX}`);
   console.log(`Server running on port ${PORT}`);
 });
