@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { Login } from './components/Login';
@@ -92,6 +92,21 @@ const AnimatedRoutes = () => {
   );
 };
 
+// Add a ZoomController component to handle the zoom effect based on location
+const ZoomController = () => {
+  const location = useLocation();
+  
+  useEffect(() => {
+    if (location.pathname.includes("login") || location.pathname.includes("register")) {
+      document.body.style.zoom = "75%";
+    } else {
+      document.body.style.zoom = "100%";
+    }
+  }, [location.pathname]);
+  
+  return null;
+};
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -99,6 +114,7 @@ function App() {
       <AuthProvider>
         <Router>
           <div className="page-transition-container">
+            <ZoomController />
             <AnimatedRoutes />
           </div>
         </Router>
